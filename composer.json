@@ -1,0 +1,24 @@
+{
+   "name": "niirrty/niirrty.db",
+   "type": "library",
+   "description": "My DB library. Supports MySQL, PgSQL and SQLite",
+   "license": "MIT",
+   "authors": [
+      {
+         "name": "Ni Irrty",
+         "email": "niirrty+code@gmail.com"
+      }
+   ],
+   "require": {
+      "php": ">=7.1",
+      "niirrty/niirrty.observer": "~0.1",
+      "niirrty/niirrty.core": "~0.1",
+      "niirrty/niirrty.io": "~0.1",
+      "symfony/yaml": "~v3.3"
+   },
+   "autoload": {
+      "psr-4": {
+         "Niirrty\\DB\\": "src/"
+      }
+   }
+}
