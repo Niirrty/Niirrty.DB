@@ -17,6 +17,7 @@ namespace Niirrty\DB\Driver;
 use Niirrty\DB\DbType;
 use Niirrty\IO\File;
 use Niirrty\IO\FileFormatException;
+use Niirrty\IO\Vfs\Manager;
 use Niirrty\NiirrtyException;
 use Symfony\Component\Yaml\Yaml;
 
@@ -27,9 +28,20 @@ class Factory
 
    // <editor-fold desc="// – – –   P U B L I C   S T A T I C   M E T H O D S   – – – – – – – – – – – – – – – – –">
 
-   public static function FromConfigFile( string $configFile ) : IDriver
+
+   /**
+    * @param string                       $configFile
+    * @param \Niirrty\IO\Vfs\Manager|null $vfsManager Optional VFS manager
+    * @return \Niirrty\DB\Driver\IDriver
+    * @throws \Niirrty\IO\FileFormatException
+    */
+   public static function FromConfigFile( string $configFile, ?Manager $vfsManager = null ) : IDriver
    {
 
+      if ( null !== $vfsManager )
+      {
+         $configFile = $vfsManager->parsePath( $configFile );
+      }
       $ext  = \strtolower( File::GetExtensionName( $configFile ) );
       $data = [];
 
@@ -37,14 +49,20 @@ class Factory
       {
 
          case 'php':
-            try {
-                /** @noinspection PhpIncludeInspection */
-                $data = include $configFile; }
-            catch ( \Throwable $ex ) { throw new FileFormatException(
-               $configFile,
-               'Unable to parse the DB Driver config file as PHP format.',
-               254,
-               $ex ); }
+            try
+            {
+               /** @noinspection PhpIncludeInspection */
+               $data = include $configFile;
+            }
+            catch ( \Throwable $ex )
+            {
+               throw new FileFormatException(
+                  $configFile,
+                  'Unable to parse the DB Driver config file as PHP format.',
+                  254,
+                  $ex
+               );
+            }
             if ( ! \is_array( $data ) || \count( $data ) < 1 )
             {
                throw new FileFormatException(
