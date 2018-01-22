@@ -221,7 +221,14 @@ class Connection
 
       try
       {
-         $this->_pdo = new \PDO( $dsn, $user, $pass, $opts );
+         if ( $this->_driver->getType() === 'sqlite' || ( null === $user && null === $pass && [] === $opts ) )
+         {
+            $this->_pdo = new \PDO( $dsn );
+         }
+         else
+         {
+            $this->_pdo = new \PDO( $dsn, $user, $pass, $opts );
+         }
       }
       catch ( \Throwable $ex )
       {
