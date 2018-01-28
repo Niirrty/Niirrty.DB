@@ -221,9 +221,13 @@ class Connection
 
       try
       {
-         if ( $this->_driver->getType() === 'sqlite' || ( null === $user && null === $pass && [] === $opts ) )
+         if ( ! isset( $opts[ \PDO::ATTR_ERRMODE ] ) )
          {
-            $this->_pdo = new \PDO( $dsn );
+            $opts[ \PDO::ATTR_ERRMODE ] = \PDO::ERRMODE_EXCEPTION;
+         }
+         if ( $this->_driver->getType() === 'sqlite' || ( null === $user && null === $pass ) )
+         {
+            $this->_pdo = new \PDO( $dsn, null, null, $opts );
          }
          else
          {
