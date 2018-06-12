@@ -23,7 +23,7 @@ use Niirrty\DB\Driver\IDriver;
  *
  * @since v0.1.0
  */
-class Connection
+class Connection implements IConnection
 {
 
 
