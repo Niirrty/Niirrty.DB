@@ -459,7 +459,7 @@ final class MySQL extends AbstractDriver
     * @param  \PDO   $pdo
     * @param  string $tableName
     * @return bool
-    * @throws \Niirrty\DB\QueryException
+    * @throws QueryException
     */
    public function tableExists( \PDO $pdo, string $tableName ) : bool
    {
