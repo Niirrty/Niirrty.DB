@@ -11,13 +11,14 @@
    ],
    "require": {
       "php": ">=7.1",
-      "niirrty/niirrty.observer": "~0.1",
-      "niirrty/niirrty.core": "~0.1",
-      "niirrty/niirrty.io": "~0.1",
-      "niirrty/niirrty.io.vfs": "~0.1",
+      "niirrty/niirrty.observer": "~0.3",
+      "niirrty/niirrty.core": "~0.3",
+      "niirrty/niirrty.io": "~0.3",
+      "niirrty/niirrty.io.vfs": "~0.3",
       "symfony/yaml": "~v3.3",
       "ext-mbstring": "*",
-      "ext-pdo": "*"
+      "ext-pdo": "*",
+      "ext-json": "*"
    },
    "autoload": {
       "psr-4": {

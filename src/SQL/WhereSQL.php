@@ -43,6 +43,7 @@ class WhereSQL
 
     #region // PRIVATE FIELDS
 
+
     /**
      * @internal All single parts of the WHERE Statement
      * @var array
@@ -68,6 +69,7 @@ class WhereSQL
 
     public function __construct( ?WhereSQL $parent, string $dbType = null )
     {
+
         $this->_parts = [];
         $this->_parent = $parent;
         $this->_dbType = null === $dbType ? ( null === $parent ? DbType::MYSQL : $parent->getDbType() ) : $dbType;
@@ -83,7 +85,7 @@ class WhereSQL
      *
      * @return int
      */
-    public function countParts() : int
+    public function countParts(): int
     {
 
         return \count( $this->_parts );
@@ -95,7 +97,7 @@ class WhereSQL
      *
      * @return WhereCondition
      */
-    public function cond() : WhereCondition
+    public function cond(): WhereCondition
     {
 
         $this->_parts[] = new WhereCondition( $this );
@@ -109,7 +111,7 @@ class WhereSQL
      *
      * @return WhereSQL
      */
-    public function group() : WhereSQL
+    public function group(): WhereSQL
     {
 
         $this->_parts[] = new WhereSQL( $this, $this->_dbType );
@@ -122,15 +124,16 @@ class WhereSQL
      * Adds the 'AND' or 'OR' operator
      *
      * @param string $name 'AND' or 'OR'
+     *
      * @return WhereSQL
      * @throws DBException
      */
-    public function op( string $name = 'AND' ) : WhereSQL
+    public function op( string $name = 'AND' ): WhereSQL
     {
 
         $name = \strtoupper( $name );
 
-        if ( $name !== 'AND' AND $name !== 'OR' )
+        if ( $name !== 'AND' and $name !== 'OR' )
         {
             throw new DBException( 'A condition can only be "AND" or "OR"!' );
         }
@@ -158,7 +161,7 @@ class WhereSQL
      *
      * @return string
      */
-    public function getDbType() : string
+    public function getDbType(): string
     {
 
         return $this->_dbType;
@@ -171,7 +174,7 @@ class WhereSQL
      * @return WhereSQL
      * @throws DBException If the operator should be placed at a wrong position
      */
-    public function opAnd() : WhereSQL
+    public function opAnd(): WhereSQL
     {
 
         return $this->op( 'AND' );
@@ -184,7 +187,7 @@ class WhereSQL
      * @return WhereSQL
      * @throws DBException If the operator should be placed at a wrong position
      */
-    public function opOR() : WhereSQL
+    public function opOR(): WhereSQL
     {
 
         return $this->op( 'OR' );
@@ -196,7 +199,7 @@ class WhereSQL
      *
      * @return WhereSQL|null
      */
-    public function getParent() : ?WhereSQL
+    public function getParent(): ?WhereSQL
     {
 
         return $this->_parent;
@@ -208,7 +211,7 @@ class WhereSQL
      *
      * @return bool
      */
-    public function hasParent() : bool
+    public function hasParent(): bool
     {
 
         return null !== $this->_parent;
@@ -220,7 +223,7 @@ class WhereSQL
      *
      * @return WhereSQL
      */
-    public function end() : WhereSQL
+    public function end(): WhereSQL
     {
 
         if ( null !== $this->_parent )
@@ -232,7 +235,7 @@ class WhereSQL
 
     }
 
-    public function __toString() : string
+    public function __toString(): string
     {
 
         if ( $this->countParts() < 1 )
@@ -256,7 +259,7 @@ class WhereSQL
     #endregion
 
 
-    public static function Create( string $dbType ) : WhereSQL
+    public static function Create( string $dbType ): WhereSQL
     {
 
         return new WhereSQL( null, $dbType );

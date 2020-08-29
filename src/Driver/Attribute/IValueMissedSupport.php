@@ -1,14 +1,14 @@
 <?php
 /**
  * @author         Ni Irrty <niirrty+code@gmail.com>
- * @copyright  (c) 2016, Niirrty
+ * @copyright      © 2017-2020, Niirrty
  * @package        Niirrty\DB\Driver\Attribute
  * @since          2017-11-01
- * @version        0.1.0
+ * @version        0.3.0
  */
 
 
-declare( strict_types = 1 );
+declare( strict_types=1 );
 
 
 namespace Niirrty\DB\Driver\Attribute;
@@ -22,13 +22,16 @@ namespace Niirrty\DB\Driver\Attribute;
 interface IValueMissedSupport
 {
 
-   /**
-    * Gets if an attribute with defined name is defined
-    *
-    * @param string $attributeName
-    * @return bool
-    */
-   public function hasAttribute( string $attributeName ) : bool;
+
+    /**
+     * Gets if an attribute with defined name is defined
+     *
+     * @param string $attributeName
+     *
+     * @return bool
+     */
+    public function hasAttribute( string $attributeName ): bool;
+
 
 }
 

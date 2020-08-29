@@ -1,21 +1,21 @@
 <?php
 /**
  * @author         Ni Irrty <niirrty+code@gmail.com>
- * @copyright  (c) 2016, Niirrty
+ * @copyright      © 2017-2020, Niirrty
  * @package        Niirrty\DB\Driver\Attribute
  * @since          2017-11-01
- * @version        0.1.0
+ * @version        0.3.0
  */
 
 
-declare( strict_types = 1 );
+declare( strict_types=1 );
 
 
 namespace Niirrty\DB\Driver;
 
 
 use Niirrty\ArgumentException;
-use \Niirrty\DB\Driver\Attribute\Support;
+use Niirrty\DB\Driver\Attribute\Support;
 
 
 /**
@@ -27,212 +27,221 @@ abstract class AbstractDriver implements IDriver
 {
 
 
-   // <editor-fold desc="// – – –   P R O T E C T E D   F I E L D S   – – – – – – – – – – – – – – – – – – – – – –">
-
-   /**
-    * Support of driver specific attributes.
-    *
-    * @type \Niirrty\DB\Driver\Attribute\Support
-    */
-   protected $_supportedAttributes;
-
-   /**
-    * The driver type name. Must be defined by a constant of class {@see \UK\DB\DbType}.
-    *
-    * @type string
-    */
-   protected $_type;
-
-   /**
-    * All driver specific attribute values.
-    *
-    * @type array
-    */
-   protected $_attributes;
-
-   // </editor-fold>
+    // <editor-fold desc="// – – –   P R O T E C T E D   F I E L D S   – – – – – – – – – – – – – – – – – – – – – –">
 
 
-   // <editor-fold desc="// – – –   P R O T E C T E D   C O N S T R U C T O R   – – – – – – – – – – – – – – – – –">
+    /**
+     * Support of driver specific attributes.
+     *
+     * @type Support
+     */
+    protected $_supportedAttributes;
 
-   protected function __construct( string $type, Support $supportedAttributes )
-   {
+    /**
+     * The driver type name. Must be defined by a constant of class {@see \Niirrty\DB\DbType}.
+     *
+     * @type string
+     */
+    protected $_type;
 
-      $this->_type                  = $type;
-      $this->_supportedAttributes   = $supportedAttributes;
-      $this->_attributes            = [];
+    /**
+     * All driver specific attribute values.
+     *
+     * @type array
+     */
+    protected $_attributes;
 
-   }
-
-   // </editor-fold>
+    // </editor-fold>
 
 
-   // <editor-fold desc="// – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –">
+    // <editor-fold desc="// – – –   P R O T E C T E D   C O N S T R U C T O R   – – – – – – – – – – – – – – – – –">
 
-   /**
-    * Gets the driver type name. Must be defined by a constant of {@see \UK\DB\DbType}.
-    *
-    * @return string
-    */
-   public function getType() : string
-   {
+    protected function __construct( string $type, Support $supportedAttributes )
+    {
 
-      return $this->_type;
+        $this->_type = $type;
+        $this->_supportedAttributes = $supportedAttributes;
+        $this->_attributes = [];
 
-   }
+    }
 
-   /**
-    * Gets the support of driver specific attributes.
-    *
-    * @return \Niirrty\DB\Driver\Attribute\Support
-    */
-   public function getAttributeSupport() : Support
-   {
+    // </editor-fold>
 
-      return $this->_supportedAttributes;
 
-   }
+    // <editor-fold desc="// – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –">
 
-   /**
-    * Sets the value of a driver specific Attribute.
-    *
-    * @param  string $name  The name of the attribute
-    * @param  mixed  $value The attribute value
-    * @return AbstractDriver
-    * @throws \Niirrty\ArgumentException If a unknown attribute should be defined
-    */
-   public function setAttribute( string $name, $value )
-   {
+    /**
+     * Gets the driver type name. Must be defined by a constant of {@see \Niirrty\DB\DbType}.
+     *
+     * @return string
+     */
+    public function getType(): string
+    {
 
-      if ( ! $this->_supportedAttributes->has( $name ) )
-      {
-         // Unknown attribute
-         throw new ArgumentException(
-            'name', $name, 'Can not set the DB driver "' . $this->_type . '" not supports a attribute with this name!'
-         );
-      }
+        return $this->_type;
 
-      if ( ! $this->_supportedAttributes->get( $name )->validateValue( $value ) )
-      {
-         // Invalid value
-         throw new ArgumentException(
-            'value', $value, 'Can not set the DB driver "' . $this->_type . '" attribute "' . $name .
-                             '" value, because the value is invalid!'
-         );
-      }
+    }
 
-      $this->_attributes[ $name ] = $value;
+    /**
+     * Gets the support of driver specific attributes.
+     *
+     * @return Support
+     */
+    public function getAttributeSupport(): Support
+    {
 
-      return $this;
+        return $this->_supportedAttributes;
 
-   }
+    }
 
-   /**
-    * Gets the value of a driver specific Attribute.
-    *
-    * @param  string $name
-    * @param  mixed  $defaultValue
-    * @return mixed
-    */
-   public function getAttribute( string $name, $defaultValue = false )
-   {
+    /**
+     * Sets the value of a driver specific Attribute.
+     *
+     * @param string $name  The name of the attribute
+     * @param mixed  $value The attribute value
+     *
+     * @return AbstractDriver
+     * @throws ArgumentException If a unknown attribute should be defined
+     */
+    public function setAttribute( string $name, $value )
+    {
 
-      if ( ! $this->hasAttribute( $name ) )
-      {
-         return $defaultValue;
-      }
+        if ( !$this->_supportedAttributes->has( $name ) )
+        {
+            // Unknown attribute
+            throw new ArgumentException(
+                'name', $name,
+                'Can not set the DB driver "' . $this->_type . '" not supports a attribute with this name!'
+            );
+        }
 
-      return $this->_attributes[ $name ];
+        if ( !$this->_supportedAttributes->get( $name )->validateValue( $value ) )
+        {
+            // Invalid value
+            throw new ArgumentException(
+                'value', $value, 'Can not set the DB driver "' . $this->_type . '" attribute "' . $name .
+                                 '" value, because the value is invalid!'
+            );
+        }
 
-   }
+        $this->_attributes[ $name ] = $value;
 
-   /**
-    * Gets if a attribute exists.
-    *
-    * @param string $name
-    * @return bool
-    */
-   public function hasAttribute( string $name ) : bool
-   {
+        return $this;
 
-      return \array_key_exists( $name, $this->_attributes );
+    }
 
-   }
+    /**
+     * Gets the value of a driver specific Attribute.
+     *
+     * @param string $name
+     * @param mixed  $defaultValue
+     *
+     * @return mixed
+     */
+    public function getAttribute( string $name, $defaultValue = false )
+    {
 
-   /**
-    * Gets the names of all currently defined attributes.
-    *
-    * @return array
-    */
-   public function getNamesOfDefinedAttributes() : array
-   {
+        if ( !$this->hasAttribute( $name ) )
+        {
+            return $defaultValue;
+        }
 
-      return \array_keys( $this->_attributes );
+        return $this->_attributes[ $name ];
 
-   }
+    }
 
-   /**
-    * Gets all currently defined attributes.
-    *
-    * @return array
-    */
-   public function getDefinedAttributes() : array
-   {
-      return $this->_attributes;
-   }
+    /**
+     * Gets if a attribute exists.
+     *
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasAttribute( string $name ): bool
+    {
 
-   /**
-    * Gets the attribute with defined name.
-    *
-    * @param  string $name
-    * @return mixed
-    */
-   public function __get( $name )
-   {
+        return \array_key_exists( $name, $this->_attributes );
 
-      return $this->getAttribute( $name );
+    }
 
-   }
+    /**
+     * Gets the names of all currently defined attributes.
+     *
+     * @return array
+     */
+    public function getNamesOfDefinedAttributes(): array
+    {
 
-   /**
-    * Sets the value of a driver specific Attribute.
-    *
-    * @param  string $name
-    * @param  mixed  $value
-    */
-   public function __set( $name, $value )
-   {
+        return \array_keys( $this->_attributes );
 
-      if ( ! $this->_supportedAttributes->has( $name ) )
-      {
-         // Unknown attribute
-         return;
-      }
+    }
 
-      if ( ! $this->_supportedAttributes->get( $name )->validateValue( $value ) )
-      {
-         // Invalid value
-         return;
-      }
+    /**
+     * Gets all currently defined attributes.
+     *
+     * @return array
+     */
+    public function getDefinedAttributes(): array
+    {
 
-      $this->_attributes[ $name ] = $value;
+        return $this->_attributes;
+    }
 
-   }
+    /**
+     * Gets the attribute with defined name.
+     *
+     * @param string $name
+     *
+     * @return mixed
+     */
+    public function __get( $name )
+    {
 
-   /**
-    * Checks if a value of the attribute with defined name is defined.
-    *
-    * @param  string $name
-    * @return bool
-    */
-   public function __isset( $name )
-   {
+        return $this->getAttribute( $name );
 
-      return $this->hasAttribute( $name );
+    }
 
-   }
+    /**
+     * Sets the value of a driver specific Attribute.
+     *
+     * @param string $name
+     * @param mixed  $value
+     */
+    public function __set( $name, $value )
+    {
 
-   // </editor-fold>
+        if ( !$this->_supportedAttributes->has( $name ) )
+        {
+            // Unknown attribute
+            return;
+        }
+
+        if ( !$this->_supportedAttributes->get( $name )->validateValue( $value ) )
+        {
+            // Invalid value
+            return;
+        }
+
+        $this->_attributes[ $name ] = $value;
+
+    }
+
+    /**
+     * Checks if a value of the attribute with defined name is defined.
+     *
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function __isset( $name )
+    {
+
+        return $this->hasAttribute( $name );
+
+    }
+
+
+    // </editor-fold>
 
 
 }

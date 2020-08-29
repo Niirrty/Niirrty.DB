@@ -1,14 +1,14 @@
 <?php
 /**
  * @author         Ni Irrty <niirrty+code@gmail.com>
- * @copyright  (c) 2016, Niirrty
+ * @copyright      © 2017-2020, Niirrty
  * @package        Niirrty\DB\Driver\Attribute
  * @since          2017-11-01
- * @version        0.1.0
+ * @version        0.3.0
  */
 
 
-declare( strict_types = 1 );
+declare( strict_types=1 );
 
 
 namespace Niirrty\DB\Driver\Attribute;
@@ -32,73 +32,75 @@ class ValueMissedLink
 {
 
 
-   // <editor-fold desc="// – – –   P R I V A T E   F I E L D S   – – – – – – – – – – – – – – – – – – – – – – – –">
-
-   /**
-    * The basic collection of supported attributes
-    *
-    * @type IValueMissedSupport
-    */
-   private $_support;
-
-   // </editor-fold>
+    // <editor-fold desc="// – – –   P R I V A T E   F I E L D S   – – – – – – – – – – – – – – – – – – – – – – – –">
 
 
-   // <editor-fold desc="// – – –   P R O T E C T E D   F I E L D S   – – – – – – – – – – – – – – – – – – – – – –">
+    /**
+     * The basic collection of supported attributes
+     *
+     * @type IValueMissedSupport
+     */
+    private $_support;
 
-   /**
-    * The name of the required attribute.
-    *
-    * @type string
-    */
-   protected $_requiredAttributeName;
-
-   /**
-    * The name of the other attribute that should be defined if the required not exists.
-    *
-    * @type string
-    */
-   protected $_altAttributeName;
-
-   // </editor-fold>
+    // </editor-fold>
 
 
-   // <editor-fold desc="// – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –">
+    // <editor-fold desc="// – – –   P R O T E C T E D   F I E L D S   – – – – – – – – – – – – – – – – – – – – – –">
 
-   /**
-    * ValueMissedLink constructor.
-    *
-    * @param \Niirrty\DB\Driver\Attribute\IValueMissedSupport $support
-    * @param string                                      $required
-    * @param string                                      $alt
-    */
-   public function __construct( IValueMissedSupport $support, string $required, string $alt )
-   {
+    /**
+     * The name of the required attribute.
+     *
+     * @type string
+     */
+    protected $_requiredAttributeName;
 
-      $this->_support = $support;
-      $this->_requiredAttributeName = $required;
-      $this->_altAttributeName = $alt;
+    /**
+     * The name of the other attribute that should be defined if the required not exists.
+     *
+     * @type string
+     */
+    protected $_altAttributeName;
 
-   }
-
-   // </editor-fold>
+    // </editor-fold>
 
 
-   // <editor-fold desc="// – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –">
+    // <editor-fold desc="// – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –">
 
-   public function isValid() : bool
-   {
+    /**
+     * ValueMissedLink constructor.
+     *
+     * @param IValueMissedSupport $support
+     * @param string              $required
+     * @param string              $alt
+     */
+    public function __construct( IValueMissedSupport $support, string $required, string $alt )
+    {
 
-      if ( $this->_support->hasAttribute( $this->_requiredAttributeName ) )
-      {
-         return true;
-      }
+        $this->_support = $support;
+        $this->_requiredAttributeName = $required;
+        $this->_altAttributeName = $alt;
 
-      return $this->_support->hasAttribute( $this->_altAttributeName );
+    }
 
-   }
+    // </editor-fold>
 
-   // </editor-fold>
+
+    // <editor-fold desc="// – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –">
+
+    public function isValid(): bool
+    {
+
+        if ( $this->_support->hasAttribute( $this->_requiredAttributeName ) )
+        {
+            return true;
+        }
+
+        return $this->_support->hasAttribute( $this->_altAttributeName );
+
+    }
+
+
+    // </editor-fold>
 
 
 }

@@ -7,11 +7,13 @@ namespace Niirrty\DB\SQL;
 use Niirrty\DB\DBException;
 use Niirrty\DB\DbType;
 
+
 class WhereCondition
 {
 
 
     #region // PUBLIC CONSTANTS
+
 
     /**
      * The column name value is a regular column name
@@ -38,15 +40,23 @@ class WhereCondition
 
     #region // PRIVATE CONSTANTS
 
-    private const OP_TYPE_EQ = 'eq';
-    private const OP_TYPE_NEQ = 'neq';
-    private const OP_TYPE_LT = 'lt';
-    private const OP_TYPE_GT = 'gt';
+    private const OP_TYPE_EQ    = 'eq';
+
+    private const OP_TYPE_NEQ   = 'neq';
+
+    private const OP_TYPE_LT    = 'lt';
+
+    private const OP_TYPE_GT    = 'gt';
+
     private const OP_TYPE_GL_EQ = 'lteq';
+
     private const OP_TYPE_GT_EQ = 'gteq';
-    private const OP_TYPE_IS = 'is';
-    private const OP_TYPE_ISN = 'isn';
-    private const OP_TYPE_IN = 'in';
+
+    private const OP_TYPE_IS    = 'is';
+
+    private const OP_TYPE_ISN   = 'isn';
+
+    private const OP_TYPE_IN    = 'in';
 
     #endregion
 
@@ -87,7 +97,7 @@ class WhereCondition
      * @internal The parent WhereSQL instance
      * @var WhereSQL
      */
-    private $_parent = null;
+    private $_parent;
 
     #endregion
 
@@ -101,6 +111,7 @@ class WhereCondition
      */
     public function __construct( WhereSQL $parent )
     {
+
         $this->_parent = $parent;
     }
 
@@ -112,11 +123,13 @@ class WhereCondition
     /**
      * Sets the column condition part.
      *
-     * @param string $column  THe column definition
-     * @param string $columnType The type of the column definition WhereCondition::COL_TYPE_NAME or WhereCondition::COL_TYPE_SQL
+     * @param string $column     THe column definition
+     * @param string $columnType The type of the column definition WhereCondition::COL_TYPE_NAME or
+     *                           WhereCondition::COL_TYPE_SQL
+     *
      * @return WhereCondition
      */
-    public function col( string $column, string $columnType = self::COL_TYPE_NAME ) : WhereCondition
+    public function col( string $column, string $columnType = self::COL_TYPE_NAME ): WhereCondition
     {
 
         $this->_col = $column;
@@ -133,7 +146,7 @@ class WhereCondition
      *
      * @return WhereCondition
      */
-    public function eq() : WhereCondition
+    public function eq(): WhereCondition
     {
 
         $this->_op = self::OP_TYPE_EQ;
@@ -147,7 +160,7 @@ class WhereCondition
      *
      * @return WhereCondition
      */
-    public function neq() : WhereCondition
+    public function neq(): WhereCondition
     {
 
         $this->_op = self::OP_TYPE_NEQ;
@@ -161,7 +174,7 @@ class WhereCondition
      *
      * @return WhereCondition
      */
-    public function gteq() : WhereCondition
+    public function gteq(): WhereCondition
     {
 
         $this->_op = self::OP_TYPE_GT_EQ;
@@ -175,7 +188,7 @@ class WhereCondition
      *
      * @return WhereCondition
      */
-    public function lteq() : WhereCondition
+    public function lteq(): WhereCondition
     {
 
         $this->_op = self::OP_TYPE_GL_EQ;
@@ -189,7 +202,7 @@ class WhereCondition
      *
      * @return WhereCondition
      */
-    public function lt() : WhereCondition
+    public function lt(): WhereCondition
     {
 
         $this->_op = self::OP_TYPE_LT;
@@ -203,7 +216,7 @@ class WhereCondition
      *
      * @return WhereCondition
      */
-    public function gt() : WhereCondition
+    public function gt(): WhereCondition
     {
 
         $this->_op = self::OP_TYPE_GT;
@@ -217,7 +230,7 @@ class WhereCondition
      *
      * @return WhereCondition
      */
-    public function isValue() : WhereCondition
+    public function isValue(): WhereCondition
     {
 
         $this->_op = self::OP_TYPE_IS;
@@ -231,7 +244,7 @@ class WhereCondition
      *
      * @return WhereCondition
      */
-    public function isNot() : WhereCondition
+    public function isNot(): WhereCondition
     {
 
         $this->_op = self::OP_TYPE_ISN;
@@ -245,7 +258,7 @@ class WhereCondition
      *
      * @return WhereCondition
      */
-    public function inValue() : WhereCondition
+    public function inValue(): WhereCondition
     {
 
         $this->_op = self::OP_TYPE_IN;
@@ -261,9 +274,10 @@ class WhereCondition
      *
      * @param string $value
      * @param string $valueType
+     *
      * @return $this
      */
-    public function val( string $value, string $valueType = self::VAL_TYPE_SQL ) : WhereCondition
+    public function val( string $value, string $valueType = self::VAL_TYPE_SQL ): WhereCondition
     {
 
         $this->_val = $value;
@@ -278,10 +292,10 @@ class WhereCondition
      *
      * @return bool
      */
-    public function isValid() : bool
+    public function isValid(): bool
     {
 
-        return null !== $this->_col     && null !== $this->_op      && null !== $this->_val &&
+        return null !== $this->_col && null !== $this->_op && null !== $this->_val &&
                null !== $this->_colType && null !== $this->_valType;
 
     }
@@ -292,19 +306,21 @@ class WhereCondition
      * @return WhereSQL
      * @throws DBException If the condition is not valid.
      */
-    public function end() : WhereSQL
+    public function end(): WhereSQL
     {
-        if ( ! $this->isValid() )
+
+        if ( !$this->isValid() )
         {
             throw new DBException( 'Can not end this where condition because not all required parts are defined!' );
         }
+
         return $this->_parent;
     }
 
     public function __toString()
     {
 
-        if ( ! $this->isValid() )
+        if ( !$this->isValid() )
         {
             return '';
         }
@@ -376,8 +392,9 @@ class WhereCondition
 
     #region // PRIVATE METHODS
 
-    private function getFieldNameEnclosures() : array
+    private function getFieldNameEnclosures(): array
     {
+
         switch ( $this->_parent->getDbType() )
         {
             case DbType::PGSQL:
@@ -388,8 +405,9 @@ class WhereCondition
         }
     }
 
-    private function getStringEnclosures() : string
+    private function getStringEnclosures(): string
     {
+
         switch ( $this->_parent->getDbType() )
         {
             case DbType::PGSQL:
@@ -400,6 +418,7 @@ class WhereCondition
                 return '"';
         }
     }
+
 
     #endregion
 

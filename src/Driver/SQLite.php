@@ -1,25 +1,22 @@
 <?php
 /**
  * @author         Ni Irrty <niirrty+code@gmail.com>
- * @copyright  (c) 2016, Niirrty
+ * @copyright      © 2017-2020, Niirrty
  * @package        Niirrty\DB\Driver\Attribute
  * @since          2017-11-01
- * @version        0.1.0
+ * @version        0.3.0
  */
 
 
-declare( strict_types = 1 );
+declare( strict_types=1 );
 
 
 namespace Niirrty\DB\Driver;
 
 
 use Niirrty\ArgumentException;
-use Niirrty\DB\DbType;
-use Niirrty\DB\Driver\Attribute\Descriptor;
-use Niirrty\DB\Driver\Attribute\Support;
-use Niirrty\DB\Driver\Attribute\Type;
-use Niirrty\DB\QueryException;
+use Niirrty\DB\{DbType, QueryException};
+use Niirrty\DB\Driver\Attribute\{Descriptor, Support, Type};
 
 
 /**
@@ -33,130 +30,135 @@ final class SQLite extends AbstractDriver
 {
 
 
-   // <editor-fold desc="// – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –">
+    // <editor-fold desc="// – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –">
 
-   /**
-    * SQLite driver constructor.
-    */
-   public function __construct()
-   {
 
-      $support = ( new Support() )
+    /**
+     * SQLite driver constructor.
+     */
+    public function __construct()
+    {
 
-         ->setAttributeSeparator( ';' )
-         ->setDSNKeyValueSeparator( '' )
+        $support = ( new Support() )
+            ->setAttributeSeparator( ';' )
+            ->setDSNKeyValueSeparator( '' )
 
-         // Database name
-         ->add(
-            ( new Descriptor( 'db', Type::DSN_PART, true ) )
-               ->setUseNameInDSN( false )
-               ->setValidator( function( $value )
-                  {
-                     if ( null === $value || ! \is_string( $value ) ||  '' === \trim( $value ) )
-                     {
-                        return false;
-                     }
-                     if ( ':memory:' === $value )
-                     {
-                        return true;
-                     }
-                     if ( '\\' === \DIRECTORY_SEPARATOR )
-                     {
-                        return (bool) \preg_match( '~^[a-zA-Z0-9_.:\\\\!/$ -]+?$~', $value );
-                     }
-                     return (bool) \preg_match( '~^[a-zA-Z0-9_./!$ -]+?$~', $value );
-                  }
-               )
-         );
+            // Database name
+            ->add(
+                ( new Descriptor( 'db', Type::DSN_PART, true ) )
+                    ->setUseNameInDSN( false )
+                    ->setValidator( function ( $value )
+                    {
 
-      parent::__construct( DbType::SQLITE, $support );
+                        if ( null === $value || !\is_string( $value ) || '' === \trim( $value ) )
+                        {
+                            return false;
+                        }
+                        if ( ':memory:' === $value )
+                        {
+                            return true;
+                        }
+                        if ( '\\' === \DIRECTORY_SEPARATOR )
+                        {
+                            return (bool) \preg_match( '~^[a-zA-Z0-9_.:\\\\!/$ -]+?$~', $value );
+                        }
 
-   }
+                        return (bool) \preg_match( '~^[a-zA-Z0-9_./!$ -]+?$~', $value );
+                    }
+                    )
+            );
 
-   // </editor-fold>
+        parent::__construct( DbType::SQLITE, $support );
 
-   /**
-    * Gets all connection info as string
-    *
-    * @return string
-    */
-   public function getInfoString() : string
-   {
+    }
 
-      $out = '';
+    // </editor-fold>
 
-      if ( isset( $this->_attributes[ 'db' ] ) )
-      {
-         $out = 'db="' . $this->_attributes[ 'db' ] . '"';
-      }
+    /**
+     * Gets all connection info as string
+     *
+     * @return string
+     */
+    public function getInfoString(): string
+    {
 
-      return $out;
+        $out = '';
 
-   }
+        if ( isset( $this->_attributes[ 'db' ] ) )
+        {
+            $out = 'db="' . $this->_attributes[ 'db' ] . '"';
+        }
 
-   /**
-    * Gets the database (file path or ':memory:').
-    *
-    * @return null|string
-    */
-   public function getDb() : ?string
-   {
+        return $out;
 
-      return $this->_attributes[ 'db' ] ?? null;
+    }
 
-   }
+    /**
+     * Gets the database (file path or ':memory:').
+     *
+     * @return null|string
+     */
+    public function getDb(): ?string
+    {
 
-   /**
-    * Sets the database (file path or ':memory:').
-    *
-    * @param string $db
-    * @return \Niirrty\DB\Driver\SQLite
-    * @throws \Niirrty\ArgumentException
-    */
-   public function setDb( string $db ) : SQLite
-   {
+        return $this->_attributes[ 'db' ] ?? null;
 
-      if ( ! $this->_supportedAttributes->get( 'db' )->validateValue( $db ) )
-      {
-         throw new ArgumentException( 'db', $db, 'Invalid database!' );
-      }
+    }
 
-      $this->_attributes[ 'db' ] = $db;
+    /**
+     * Sets the database (file path or ':memory:').
+     *
+     * @param string $db
+     *
+     * @return SQLite
+     * @throws ArgumentException
+     */
+    public function setDb( string $db ): SQLite
+    {
 
-      return $this;
+        if ( !$this->_supportedAttributes->get( 'db' )->validateValue( $db ) )
+        {
+            throw new ArgumentException( 'db', $db, 'Invalid database!' );
+        }
 
-   }
+        $this->_attributes[ 'db' ] = $db;
 
-   /**
-    * @internal Gets if the table with defined name exists in selected database of current connection.
-    * @param  \PDO   $pdo
-    * @param  string $tableName
-    * @return bool
-    * @throws \Niirrty\DB\QueryException
-    */
-   public function tableExists( \PDO $pdo, string $tableName ) : bool
-   {
+        return $this;
 
-      $sql        = 'SELECT COUNT(*) AS cnt FROM sqlite_master WHERE type=\'table\' AND name=?';
-      $bindParams = [ $tableName ];
+    }
 
-      try
-      {
-         $stmt = $pdo->prepare( $sql );
-         $stmt->execute( $bindParams );
-         $record = $stmt->fetch( \PDO::FETCH_ASSOC );
-         if ( ! \is_array( $record ) || ! isset( $record[ 'cnt' ] ) )
-         {
-            return false;
-         }
-         return ( (int) $record[ 'cnt' ] ) > 0;
-      }
-      catch ( \Throwable $ex )
-      {
-         throw new QueryException( $this, $sql, $bindParams, 'The SQL query execution fails.', 256, $ex );
-      }
+    /**
+     * @param \PDO   $pdo
+     * @param string $tableName
+     *
+     * @return bool
+     * @throws QueryException
+     * @internal Gets if the table with defined name exists in selected database of current connection.
+     */
+    public function tableExists( \PDO $pdo, string $tableName ): bool
+    {
 
-   }
+        $sql = 'SELECT COUNT(*) AS cnt FROM sqlite_master WHERE type=\'table\' AND name=?';
+        $bindParams = [ $tableName ];
+
+        try
+        {
+            $stmt = $pdo->prepare( $sql );
+            $stmt->execute( $bindParams );
+            $record = $stmt->fetch( \PDO::FETCH_ASSOC );
+            if ( !\is_array( $record ) || !isset( $record[ 'cnt' ] ) )
+            {
+                return false;
+            }
+
+            return ( (int) $record[ 'cnt' ] ) > 0;
+        }
+        catch ( \Throwable $ex )
+        {
+            throw new QueryException( $this, $sql, $bindParams, 'The SQL query execution fails.', 256, $ex );
+        }
+
+    }
 
 
 }
