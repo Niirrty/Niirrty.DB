@@ -1,10 +1,10 @@
 <?php
 /**
  * @author         Ni Irrty <niirrty+code@gmail.com>
- * @copyright      © 2017-2020, Niirrty
+ * @copyright      © 2017-2021, Niirrty
  * @package        Niirrty\DB\Driver\Attribute
  * @since          2017-11-01
- * @version        0.3.0
+ * @version        0.4.0
  */
 
 
@@ -32,75 +32,36 @@ class ValueMissedLink
 {
 
 
-    // <editor-fold desc="// – – –   P R I V A T E   F I E L D S   – – – – – – – – – – – – – – – – – – – – – – – –">
-
-
-    /**
-     * The basic collection of supported attributes
-     *
-     * @type IValueMissedSupport
-     */
-    private $_support;
-
-    // </editor-fold>
-
-
-    // <editor-fold desc="// – – –   P R O T E C T E D   F I E L D S   – – – – – – – – – – – – – – – – – – – – – –">
-
-    /**
-     * The name of the required attribute.
-     *
-     * @type string
-     */
-    protected $_requiredAttributeName;
-
-    /**
-     * The name of the other attribute that should be defined if the required not exists.
-     *
-     * @type string
-     */
-    protected $_altAttributeName;
-
-    // </editor-fold>
-
-
-    // <editor-fold desc="// – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –
 
     /**
      * ValueMissedLink constructor.
      *
-     * @param IValueMissedSupport $support
-     * @param string              $required
-     * @param string              $alt
+     * @param IValueMissedSupport $support      The basic collection of supported attributes
+     * @param string              $requiredName The name of the required attribute.
+     * @param string              $altName      The name of the other attribute that should be defined if the required not exists.
      */
-    public function __construct( IValueMissedSupport $support, string $required, string $alt )
-    {
+    public function __construct(
+        private IValueMissedSupport $support, protected string $requiredName, protected string $altName ) { }
 
-        $this->_support = $support;
-        $this->_requiredAttributeName = $required;
-        $this->_altAttributeName = $alt;
-
-    }
-
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –
 
     public function isValid(): bool
     {
 
-        if ( $this->_support->hasAttribute( $this->_requiredAttributeName ) )
+        if ( $this->support->hasAttribute( $this->requiredName ) )
         {
             return true;
         }
 
-        return $this->_support->hasAttribute( $this->_altAttributeName );
+        return $this->support->hasAttribute( $this->altName );
 
     }
 
-
-    // </editor-fold>
+    #endregion
 
 
 }

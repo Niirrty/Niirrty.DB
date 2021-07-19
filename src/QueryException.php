@@ -1,10 +1,10 @@
 <?php
 /**
  * @author         Ni Irrty <niirrty+code@gmail.com>
- * @copyright      © 2017-2020, Niirrty
- * @package        Niirrty\DB\Driver\Attribute
+ * @copyright      © 2017-2021, Niirrty
+ * @package        Niirrty\DB
  * @since          2017-11-01
- * @version        0.3.0
+ * @version        0.4.0
  */
 
 
@@ -26,22 +26,21 @@ class QueryException extends ConnectionException
 {
 
 
-    // <editor-fold desc="// – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –">
-
+    #region // – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –
 
     /**
      * QueryException constructor.
      *
      * @param IDriver         $driver
-     * @param string          $query
+     * @param string|null     $query
      * @param array           $params
      * @param string|null     $message
      * @param int             $code
      * @param \Throwable|null $previous
      */
     public function __construct(
-        IDriver $driver, string $query, array $params = [], ?string $message = null,
-        $code = 256, \Throwable $previous = null )
+        IDriver $driver, private ?string $query, array $params = [], ?string $message = null,
+        int $code = 256, \Throwable $previous = null )
     {
 
         $msg = "Bad query was:\n" . $query;
@@ -59,8 +58,14 @@ class QueryException extends ConnectionException
 
     }
 
+    #endregion
 
-    // </editor-fold>
+    public function getQuery() : ?string
+    {
+
+        return $this->query;
+
+    }
 
 
 }

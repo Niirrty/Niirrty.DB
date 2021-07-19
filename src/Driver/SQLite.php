@@ -1,10 +1,10 @@
 <?php
 /**
  * @author         Ni Irrty <niirrty+code@gmail.com>
- * @copyright      © 2017-2020, Niirrty
- * @package        Niirrty\DB\Driver\Attribute
+ * @copyright      © 2017-2021, Niirrty
+ * @package        Niirrty\DB\Driver
  * @since          2017-11-01
- * @version        0.3.0
+ * @version        0.4.0
  */
 
 
@@ -14,9 +14,9 @@ declare( strict_types=1 );
 namespace Niirrty\DB\Driver;
 
 
-use Niirrty\ArgumentException;
-use Niirrty\DB\{DbType, QueryException};
-use Niirrty\DB\Driver\Attribute\{Descriptor, Support, Type};
+use \Niirrty\ArgumentException;
+use \Niirrty\DB\{DbType, QueryException};
+use \Niirrty\DB\Driver\Attribute\{Descriptor, Support, Type};
 
 
 /**
@@ -30,7 +30,7 @@ final class SQLite extends AbstractDriver
 {
 
 
-    // <editor-fold desc="// – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –
 
 
     /**
@@ -72,7 +72,7 @@ final class SQLite extends AbstractDriver
 
     }
 
-    // </editor-fold>
+    #endregion
 
     /**
      * Gets all connection info as string
@@ -116,7 +116,7 @@ final class SQLite extends AbstractDriver
     public function setDb( string $db ): SQLite
     {
 
-        if ( !$this->_supportedAttributes->get( 'db' )->validateValue( $db ) )
+        if ( !$this->supportedAttributes->get( 'db' )->validateValue( $db ) )
         {
             throw new ArgumentException( 'db', $db, 'Invalid database!' );
         }

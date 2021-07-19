@@ -1,10 +1,10 @@
 <?php
 /**
  * @author         Ni Irrty <niirrty+code@gmail.com>
- * @copyright      © 2016-2020, Niirrty
- * @package        Niirrty\DB\Driver\Attribute
+ * @copyright      © 2016-2021, Niirrty
+ * @package        Niirrty\DB\Driver
  * @since          2017-11-01
- * @version        0.3.0
+ * @version        0.4.0
  */
 
 
@@ -14,21 +14,20 @@ declare( strict_types=1 );
 namespace Niirrty\DB\Driver;
 
 
-use Niirrty\ArgumentException;
-use Niirrty\DB\DbType;
-use Niirrty\IO\File;
-use Niirrty\IO\FileFormatException;
-use Niirrty\IO\Vfs\VfsManager;
-use Niirrty\NiirrtyException;
-use Symfony\Component\Yaml\Yaml;
+use \Niirrty\ArgumentException;
+use \Niirrty\DB\DbType;
+use \Niirrty\IO\File;
+use \Niirrty\IO\FileFormatException;
+use \Niirrty\IO\Vfs\VfsManager;
+use \Niirrty\NiirrtyException;
+use \Symfony\Component\Yaml\Yaml;
 
 
 class Factory
 {
 
 
-    // <editor-fold desc="// – – –   P U B L I C   S T A T I C   M E T H O D S   – – – – – – – – – – – – – – – – –">
-
+    #region // – – –   P U B L I C   S T A T I C   M E T H O D S   – – – – – – – – – – – – – – – – –
 
     /**
      * @param string       $configFile
@@ -65,7 +64,7 @@ class Factory
                         $ex
                     );
                 }
-                if ( !\is_array( $data ) || \count( $data ) < 1 )
+                if ( ! \is_array( $data ) || \count( $data ) < 1 )
                 {
                     throw new FileFormatException(
                         $configFile,
@@ -86,7 +85,7 @@ class Factory
                         254,
                         $ex );
                 }
-                if ( !\is_array( $data ) || \count( $data ) < 1 )
+                if ( ! \is_array( $data ) || \count( $data ) < 1 )
                 {
                     throw new FileFormatException(
                         $configFile,
@@ -134,14 +133,12 @@ class Factory
             throw new NiirrtyException( 'Invalid driver config data. Missing a type or platform declaration!' );
         }
 
-        $type = isset( $configData[ 'type' ] ) ? $configData[ 'type' ] : $configData[ 'platform' ];
+        $type = $configData[ 'type' ] ?? $configData[ 'platform' ];
 
-        if ( !\in_array( $type, DbType::KNOWN_TYPES ) )
+        if ( ! \in_array( $type, DbType::KNOWN_TYPES ) )
         {
             throw new NiirrtyException( "Invalid driver config data. The type '{$type}' is unknown!" );
         }
-
-        $drv = null;
 
         switch ( $type )
         {
@@ -273,8 +270,7 @@ class Factory
 
     }
 
-
-    // </editor-fold>
+    #endregion
 
 
 }

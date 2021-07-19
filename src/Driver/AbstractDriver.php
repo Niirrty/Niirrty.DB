@@ -1,10 +1,10 @@
 <?php
 /**
  * @author         Ni Irrty <niirrty+code@gmail.com>
- * @copyright      © 2017-2020, Niirrty
- * @package        Niirrty\DB\Driver\Attribute
+ * @copyright      © 2017-2021, Niirrty
+ * @package        Niirrty\DB\Driver
  * @since          2017-11-01
- * @version        0.3.0
+ * @version        0.4.0
  */
 
 
@@ -14,8 +14,8 @@ declare( strict_types=1 );
 namespace Niirrty\DB\Driver;
 
 
-use Niirrty\ArgumentException;
-use Niirrty\DB\Driver\Attribute\Support;
+use \Niirrty\ArgumentException;
+use \Niirrty\DB\Driver\Attribute\Support;
 
 
 /**
@@ -27,48 +27,37 @@ abstract class AbstractDriver implements IDriver
 {
 
 
-    // <editor-fold desc="// – – –   P R O T E C T E D   F I E L D S   – – – – – – – – – – – – – – – – – – – – – –">
-
-
-    /**
-     * Support of driver specific attributes.
-     *
-     * @type Support
-     */
-    protected $_supportedAttributes;
-
-    /**
-     * The driver type name. Must be defined by a constant of class {@see \Niirrty\DB\DbType}.
-     *
-     * @type string
-     */
-    protected $_type;
+    #region // – – –   P R O T E C T E D   F I E L D S   – – – – – – – – – – – – – – – – – – – – – –
 
     /**
      * All driver specific attribute values.
      *
      * @type array
      */
-    protected $_attributes;
+    protected array $_attributes;
 
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   P R O T E C T E D   C O N S T R U C T O R   – – – – – – – – – – – – – – – – –">
+    #region // – – –   P R O T E C T E D   C O N S T R U C T O R   – – – – – – – – – – – – – – – – –
 
-    protected function __construct( string $type, Support $supportedAttributes )
+    /**
+     * AbstractDriver constructor.
+     *
+     * @param string  $type The driver type name. Must be defined by a constant of class {@see \Niirrty\DB\DbType}.
+     * @param Support $supportedAttributes Support of driver specific attributes.
+     */
+    protected function __construct( protected string $type, protected Support $supportedAttributes )
     {
 
-        $this->_type = $type;
-        $this->_supportedAttributes = $supportedAttributes;
-        $this->_attributes = [];
+        $this->_attributes         = [];
 
     }
 
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –
 
     /**
      * Gets the driver type name. Must be defined by a constant of {@see \Niirrty\DB\DbType}.
@@ -78,7 +67,7 @@ abstract class AbstractDriver implements IDriver
     public function getType(): string
     {
 
-        return $this->_type;
+        return $this->type;
 
     }
 
@@ -90,7 +79,7 @@ abstract class AbstractDriver implements IDriver
     public function getAttributeSupport(): Support
     {
 
-        return $this->_supportedAttributes;
+        return $this->supportedAttributes;
 
     }
 
@@ -103,23 +92,23 @@ abstract class AbstractDriver implements IDriver
      * @return AbstractDriver
      * @throws ArgumentException If a unknown attribute should be defined
      */
-    public function setAttribute( string $name, $value )
+    public function setAttribute( string $name, mixed $value ) : AbstractDriver
     {
 
-        if ( !$this->_supportedAttributes->has( $name ) )
+        if ( ! $this->supportedAttributes->has( $name ) )
         {
             // Unknown attribute
             throw new ArgumentException(
                 'name', $name,
-                'Can not set the DB driver "' . $this->_type . '" not supports a attribute with this name!'
+                'Can not set the DB driver "' . $this->type . '" not supports a attribute with this name!'
             );
         }
 
-        if ( !$this->_supportedAttributes->get( $name )->validateValue( $value ) )
+        if ( ! $this->supportedAttributes->get( $name )->validateValue( $value ) )
         {
             // Invalid value
             throw new ArgumentException(
-                'value', $value, 'Can not set the DB driver "' . $this->_type . '" attribute "' . $name .
+                'value', $value, 'Can not set the DB driver "' . $this->type . '" attribute "' . $name .
                                  '" value, because the value is invalid!'
             );
         }
@@ -133,15 +122,15 @@ abstract class AbstractDriver implements IDriver
     /**
      * Gets the value of a driver specific Attribute.
      *
-     * @param string $name
-     * @param mixed  $defaultValue
+     * @param string     $name
+     * @param mixed $defaultValue
      *
      * @return mixed
      */
-    public function getAttribute( string $name, $defaultValue = false )
+    public function getAttribute( string $name, mixed $defaultValue = false ) : mixed
     {
 
-        if ( !$this->hasAttribute( $name ) )
+        if ( ! $this->hasAttribute( $name ) )
         {
             return $defaultValue;
         }
@@ -194,7 +183,7 @@ abstract class AbstractDriver implements IDriver
      *
      * @return mixed
      */
-    public function __get( $name )
+    public function __get( string $name )
     {
 
         return $this->getAttribute( $name );
@@ -207,16 +196,16 @@ abstract class AbstractDriver implements IDriver
      * @param string $name
      * @param mixed  $value
      */
-    public function __set( $name, $value )
+    public function __set( string $name, mixed $value )
     {
 
-        if ( !$this->_supportedAttributes->has( $name ) )
+        if ( ! $this->supportedAttributes->has( $name ) )
         {
             // Unknown attribute
             return;
         }
 
-        if ( !$this->_supportedAttributes->get( $name )->validateValue( $value ) )
+        if ( ! $this->supportedAttributes->get( $name )->validateValue( $value ) )
         {
             // Invalid value
             return;
@@ -233,15 +222,14 @@ abstract class AbstractDriver implements IDriver
      *
      * @return bool
      */
-    public function __isset( $name )
+    public function __isset( string $name )
     {
 
         return $this->hasAttribute( $name );
 
     }
 
-
-    // </editor-fold>
+    #endregion
 
 
 }

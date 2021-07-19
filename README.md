@@ -9,7 +9,11 @@ For usage see the examples.
 
 First you must define the configuration.
 
-Currently it can be done by 2 different ways
+Actually it can be done by 3 different ways:
+
+* by a PHP config file
+* by a YAML config file
+* by PHP code
 
 ### 1. By PHP config file
 
@@ -40,6 +44,8 @@ return [
 * **password**: The db login password
 
 #### 1.2. Usage
+
+How to use the php config file:
 
 ```php
 <?php

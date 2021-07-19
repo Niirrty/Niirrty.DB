@@ -1,10 +1,10 @@
 <?php
 /**
  * @author         Ni Irrty <niirrty+code@gmail.com>
- * @copyright      © 2017-2020, Niirrty
+ * @copyright      © 2017-2021, Niirrty
  * @package        Niirrty\DB\Driver\Attribute
  * @since          2017-11-01
- * @version        0.3.0
+ * @version        0.4.0
  */
 
 
@@ -23,39 +23,38 @@ class Support implements \Countable, \IteratorAggregate, IValueMissedSupport
 {
 
 
-    // <editor-fold desc="// – – –   P R I V A T E   F I E L D S   – – – – – – – – – – – – – – – – – – – – – – – –">
-
+    #region // – – –   P R I V A T E   F I E L D S   – – – – – – – – – – – – – – – – – – – – – – – –
 
     /**
      * The supported attributes contained in the collection.
      *
      * @type Descriptor[]
      */
-    private $_attributes;
+    private array $_attributes;
 
     /**
      * The DSN separator char between attribute keys and values
      *
      * @type string
      */
-    private $_dsnKeyValueSeparator;
+    private string $_dsnKeyValueSeparator;
 
     /**
      * The DSN separator char between attributes.
      *
      * @type string
      */
-    private $_dsnAttributeSeparator;
+    private string $_dsnAttributeSeparator;
 
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –
 
     /**
      * Support constructor.
      *
-     * @param Descriptor[] $attributes
+     * @param Descriptor[] $attributes The supported attributes contained in the collection.
      */
     public function __construct( array $attributes = [] )
     {
@@ -66,10 +65,10 @@ class Support implements \Countable, \IteratorAggregate, IValueMissedSupport
 
     }
 
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   P R O T E C T E D   M E T H O D S   – – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P R O T E C T E D   M E T H O D S   – – – – – – – – – – – – – – – – – – – – –
 
     /**
      * Results array of items.
@@ -96,18 +95,17 @@ class Support implements \Countable, \IteratorAggregate, IValueMissedSupport
 
     }
 
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –">
-
+    #region // – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –
 
     /**
      * Retrieve an external iterator
      *
-     * @return \Traversable
+     * @return \Traversable|\ArrayIterator
      */
-    public function getIterator()
+    public function getIterator(): \Traversable|\ArrayIterator
     {
 
         return new \ArrayIterator( $this->_attributes );
@@ -185,7 +183,7 @@ class Support implements \Countable, \IteratorAggregate, IValueMissedSupport
      * @link  http://php.net/manual/en/countable.count.php
      * @return int
      */
-    public function count()
+    public function count(): int
     {
 
         return \count( $this->_attributes );
@@ -447,7 +445,7 @@ class Support implements \Countable, \IteratorAggregate, IValueMissedSupport
     }
 
 
-    // </editor-fold>
+    #endregion
 
 
 }

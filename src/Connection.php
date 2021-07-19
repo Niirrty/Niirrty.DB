@@ -1,10 +1,10 @@
 <?php
 /**
  * @author         Ni Irrty <niirrty+code@gmail.com>
- * @copyright      © 2017-2020, Niirrty
- * @package        Niirrty\DB\Driver\Attribute
+ * @copyright      © 2017-2021, Niirrty
+ * @package        Niirrty\DB
  * @since          2017-11-01
- * @version        0.3.0
+ * @version        0.4.0
  */
 
 
@@ -14,12 +14,12 @@ declare( strict_types=1 );
 namespace Niirrty\DB;
 
 
-use Niirrty\DB\Driver\Attribute\Type;
-use Niirrty\DB\Driver\IDriver;
+use \Niirrty\DB\Driver\Attribute\Type;
+use \Niirrty\DB\Driver\IDriver;
 
 
 /**
- * Defines a class that …
+ * This class defines the database connection. It always requires the definition of a DB Driver.
  *
  * @since v0.1.0
  */
@@ -27,47 +27,34 @@ class Connection
 {
 
 
-    // <editor-fold desc="// – – –   P R I V A T E   F I E L D S   – – – – – – – – – – – – – – – – – – – – – – – –">
-
-
-    /**
-     * The DBMS depending driver implementation
-     *
-     * @type IDriver
-     */
-    private $_driver;
+    #region // – – –   P R I V A T E   F I E L D S   – – – – – – – – – – – – – – – – – – – – – – – –
 
     /**
      * The usable PDO connection, or null if no connection is open.
      *
      * @type \PDO|null
      */
-    private $_pdo;
+    private ?\PDO $_pdo;
 
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –
 
     /**
      * Connection constructor.
      *
-     * @param IDriver $driver
+     * @param IDriver $driver The DBMS depending driver implementation
      */
-    public function __construct( IDriver $driver )
-    {
+    public function __construct( private IDriver $driver ) { }
 
-        $this->_driver = $driver;
-
-    }
-
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –
 
 
-    // <editor-fold desc="// – – –   G E T T E R   – – – – – – – – – – – – –">
+    #region // – – –   G E T T E R   – – – – – – – – – – – – –
 
     /**
      * Gets the DBMS depending driver implementation
@@ -77,7 +64,7 @@ class Connection
     public function getDriver(): IDriver
     {
 
-        return $this->_driver;
+        return $this->driver;
 
     }
 
@@ -93,10 +80,10 @@ class Connection
 
     }
 
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   S E T T E R   – – – – – – – – – – – – –">
+    #region // – – –   S E T T E R   – – – – – – – – – – – – –
 
     /**
      * Sets the DBMS Driver
@@ -108,17 +95,17 @@ class Connection
     public function setDriver( IDriver $driver ): Connection
     {
 
-        $this->_driver = $driver;
+        $this->driver = $driver;
         $this->_pdo = null;
 
         return $this;
 
     }
 
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   O T H E R   – – – – – – – – – – – – – -">
+    #region // – – –   O T H E R   – – – – – – – – – – – – – -
 
     /**
      * Gets if the connection is valid configured.
@@ -128,8 +115,8 @@ class Connection
     public function hasValidConfig(): bool
     {
 
-        return $this->_driver->getAttributeSupport()
-                             ->haveAllRequiredAttributes( $this->_driver->getDefinedAttributes() );
+        return $this->driver->getAttributeSupport()
+                            ->haveAllRequiredAttributes( $this->driver->getDefinedAttributes() );
 
     }
 
@@ -159,11 +146,10 @@ class Connection
             return $this;
         }
 
-        $attrSupport = $this->_driver->getAttributeSupport();
-        $definedAttributes = $this->_driver->getDefinedAttributes();
+        $attrSupport = $this->driver->getAttributeSupport();
+        $definedAttributes = $this->driver->getDefinedAttributes();
 
-
-        $dsn = $this->_driver->getType() . ':';
+        $dsn = $this->driver->getType() . ':';
         $dsnC = 0;
         $user = null;
         $pass = null;
@@ -227,11 +213,11 @@ class Connection
 
         try
         {
-            if ( !isset( $opts[ \PDO::ATTR_ERRMODE ] ) )
+            if ( ! isset( $opts[ \PDO::ATTR_ERRMODE ] ) )
             {
                 $opts[ \PDO::ATTR_ERRMODE ] = \PDO::ERRMODE_EXCEPTION;
             }
-            if ( $this->_driver->getType() === 'sqlite' || ( null === $user && null === $pass ) )
+            if ( $this->driver->getType() === 'sqlite' || ( null === $user && null === $pass ) )
             {
                 $this->_pdo = new \PDO( $dsn, null, null, $opts );
             }
@@ -242,7 +228,7 @@ class Connection
         }
         catch ( \Throwable $ex )
         {
-            throw new ConnectionException( $this->_driver, 'Connection init fails!', 256, $ex );
+            throw new ConnectionException( $this->driver, 'Connection init fails!', 256, $ex );
         }
 
         if ( 0 < \count( $sql ) )
@@ -257,7 +243,7 @@ class Connection
                 catch ( \Throwable $ex )
                 {
                     throw new QueryException(
-                        $this->_driver, $sqlString, [], 'Can not call the initial query!', 256, $ex
+                        $this->driver, $sqlString, [], 'Can not call the initial query!', 256, $ex
                     );
                 }
             }
@@ -293,7 +279,7 @@ class Connection
      * @throws ConnectionException If no connection exists an creation fails.
      * @throws QueryException      If the query execution fails
      */
-    public final function fetchAll( string $sql, array $bindParams = [], $fetchStyle = \PDO::FETCH_ASSOC ): array
+    public final function fetchAll( string $sql, array $bindParams = [], int $fetchStyle = \PDO::FETCH_ASSOC ): array
     {
 
         $this->open();
@@ -314,7 +300,11 @@ class Connection
         }
         catch ( \Throwable $ex )
         {
-            throw new QueryException( $this->_driver, $sql, $bindParams, 'Can not fetch all data from query!' );
+            throw new QueryException(
+                $this->driver,
+                $sql,
+                $bindParams,
+                'Can not fetch all data from query! ' . $ex->getMessage() );
         }
 
     }
@@ -331,7 +321,7 @@ class Connection
      * @throws QueryException      If the query execution fails
      */
     public final function fetchIterateAll(
-        string $sql, array $bindParams = [], $fetchStyle = \PDO::FETCH_ASSOC ): \Generator
+        string $sql, array $bindParams = [], int $fetchStyle = \PDO::FETCH_ASSOC ): \Generator
     {
 
         $this->open();
@@ -341,25 +331,24 @@ class Connection
             if ( 1 > \count( $bindParams ) )
             {
                 $stmt = $this->_pdo->query( $sql );
-                while ( $record = $stmt->fetch( $fetchStyle, \PDO::FETCH_ORI_NEXT ) )
-                {
-                    yield $record;
-                }
             }
             else
             {
                 $stmt = $this->_pdo->prepare( $sql );
                 $stmt->execute( $bindParams );
-
-                while ( $record = $stmt->fetch( $fetchStyle, \PDO::FETCH_ORI_NEXT ) )
-                {
-                    yield $record;
-                }
+            }
+            while ( $record = $stmt->fetch( $fetchStyle ) )
+            {
+                yield $record;
             }
         }
         catch ( \Throwable $ex )
         {
-            throw new QueryException( $this->_driver, $sql, $bindParams, 'Can not fetch all data from query!' );
+            throw new QueryException(
+                $this->driver,
+                $sql,
+                $bindParams,
+                'Can not fetch all data from query! ' . $ex->getMessage() );
         }
 
     }
@@ -375,7 +364,7 @@ class Connection
      * @throws ConnectionException If no connection exists an creation fails.
      * @throws QueryException      If the query execution fails
      */
-    public final function fetchRecord( string $sql, array $bindParams = [], $fetchStyle = \PDO::FETCH_ASSOC ): ?array
+    public final function fetchRecord( string $sql, array $bindParams = [], int $fetchStyle = \PDO::FETCH_ASSOC ): ?array
     {
 
         $this->open();
@@ -400,7 +389,11 @@ class Connection
         }
         catch ( \Throwable $ex )
         {
-            throw new QueryException( $this->_driver, $sql, $bindParams, 'Can not fetch a single record from query!' );
+            throw new QueryException(
+                $this->driver,
+                $sql,
+                $bindParams,
+                'Can not fetch a single record from query! ' . $ex->getMessage() );
         }
 
     }
@@ -408,33 +401,31 @@ class Connection
     /**
      * Fetches the first found scalar value from defined SQL query string and returns it.
      *
-     * @param string $sql          The SQL query string
-     * @param array  $bindParams   Optional bind params for prepared statements
-     * @param mixed  $defaultValue Is returned if no value could be found.
+     * @param string     $sql          The SQL query string
+     * @param array      $bindParams   Optional bind params for prepared statements
+     * @param mixed|null $defaultValue Is returned if no value could be found.
      *
      * @return mixed
      * @throws ConnectionException If no connection exists an creation fails.
      * @throws QueryException      If the query execution fails
      */
-    public final function fetchScalar( string $sql, array $bindParams = [], $defaultValue = null )
+    public final function fetchScalar( string $sql, array $bindParams = [], mixed $defaultValue = null ) : mixed
     {
 
         $this->open();
 
-        $record = null;
         try
         {
             if ( 1 > \count( $bindParams ) )
             {
                 $stmt = $this->_pdo->query( $sql );
-                $record = $stmt->fetch( \PDO::FETCH_NUM );
             }
             else
             {
                 $stmt = $this->_pdo->prepare( $sql );
                 $stmt->execute( $bindParams );
-                $record = $stmt->fetch( \PDO::FETCH_NUM );
             }
+            $record = $stmt->fetch( \PDO::FETCH_NUM );
             if ( \is_array( $record ) && isset( $record[ 0 ] ) )
             {
                 return $record[ 0 ];
@@ -444,7 +435,11 @@ class Connection
         }
         catch ( \Throwable $ex )
         {
-            throw new QueryException( $this->_driver, $sql, $bindParams, 'Can not fetch a scalar value from query!' );
+            throw new QueryException(
+                $this->driver,
+                $sql,
+                $bindParams,
+                'Can not fetch a scalar value from query! ' . $ex->getMessage() );
         }
 
     }
@@ -460,7 +455,7 @@ class Connection
      * @throws ConnectionException If no connection exists an creation fails.
      * @throws QueryException      If the query execution fails
      */
-    public final function fetchColumn( $columnIndexOrName, string $sql, array $bindParams = [] ): array
+    public final function fetchColumn( int|string $columnIndexOrName, string $sql, array $bindParams = [] ): array
     {
 
         $fetchStyle = \is_int( $columnIndexOrName ) ? \PDO::FETCH_NUM : \PDO::FETCH_ASSOC;
@@ -469,7 +464,7 @@ class Connection
 
         foreach ( $this->fetchIterateAll( $sql, $bindParams, $fetchStyle ) as $record )
         {
-            if ( !\is_array( $record ) || !isset( $record[ $columnIndexOrName ] ) )
+            if ( ! \is_array( $record ) || ! isset( $record[ $columnIndexOrName ] ) )
             {
                 continue;
             }
@@ -511,17 +506,21 @@ class Connection
         }
         catch ( \Throwable $ex )
         {
-            throw new QueryException( $this->_driver, $sql, $bindParams, 'Can not execute the query!' );
+            throw new QueryException(
+                $this->driver,
+                $sql,
+                $bindParams,
+                'Can not execute the query! ' . $ex->getMessage() );
         }
 
         return $this;
 
     }
 
-    // </editor-fold>
+    #endregion
 
 
-    // </editor-fold>
+    #endregion
 
 
 }

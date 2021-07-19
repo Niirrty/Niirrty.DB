@@ -1,10 +1,10 @@
 <?php
 /**
  * @author         Ni Irrty <niirrty+code@gmail.com>
- * @copyright      © 2017-2020, Niirrty
- * @package        Niirrty\DB\Driver\Attribute
+ * @copyright      © 2017-2021, Niirrty
+ * @package        Niirrty\DB
  * @since          2017-11-01
- * @version        0.3.0
+ * @version        0.4.0
  */
 
 
@@ -14,7 +14,7 @@ declare( strict_types=1 );
 namespace Niirrty\DB;
 
 
-use Niirrty\NiirrtyException;
+use \Niirrty\NiirrtyException;
 
 
 /**
@@ -26,8 +26,7 @@ class DBException extends NiirrtyException
 {
 
 
-    # <editor-fold desc="= = =   P U B L I C   C O N S T U C T O R   = = = = = = = = = = = = = = = = = = = = = =">
-
+    #region = = =   P U B L I C   C O N S T U C T O R   = = = = = = = = = = = = = = = = = = = = = =
 
     /**
      * Exception constructor.
@@ -43,8 +42,7 @@ class DBException extends NiirrtyException
 
     }
 
-
-    # </editor-fold>
+    #endregion
 
 
 }

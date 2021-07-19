@@ -1,10 +1,10 @@
 <?php
 /**
  * @author         Ni Irrty <niirrty+code@gmail.com>
- * @copyright      © 2017-2020, Niirrty
- * @package        Niirrty\DB\Driver\Attribute
+ * @copyright      © 2017-2021, Niirrty
+ * @package        Niirrty\DB\Driver
  * @since          2017-11-01
- * @version        0.3.0
+ * @version        0.4.0
  */
 
 
@@ -14,10 +14,10 @@ declare( strict_types=1 );
 namespace Niirrty\DB\Driver;
 
 
-use Niirrty\ArgumentException;
-use Niirrty\DB\{DbType, QueryException};
-use Niirrty\DB\Driver\Attribute\{Descriptor, Support, Type, ValueMissedLink};
-use Niirrty\TypeTool;
+use \Niirrty\ArgumentException;
+use \Niirrty\DB\{DbType, QueryException};
+use \Niirrty\DB\Driver\Attribute\{Descriptor, Support, Type, ValueMissedLink};
+use \Niirrty\TypeTool;
 
 
 /**
@@ -37,8 +37,7 @@ final class MySQL extends AbstractDriver
 {
 
 
-    // <editor-fold desc="// – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –">
-
+    #region // – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –
 
     /**
      * MySQL driver constructor.
@@ -48,7 +47,7 @@ final class MySQL extends AbstractDriver
 
         $support = ( new Support() )
 
-            // MySQL DSN attributes are separated by a space
+            // MySQL DSN attributes are separated by a semicolon
             ->setAttributeSeparator( ';' )
 
             // MySQL DSN attribute names and values are separated by a equal sign
@@ -185,7 +184,8 @@ final class MySQL extends AbstractDriver
 
     }
 
-    // </editor-fold>
+    #endregion
+
 
     /**
      * Gets all connection info as string
@@ -195,17 +195,17 @@ final class MySQL extends AbstractDriver
     public function getInfoString(): string
     {
 
-        $out = '';
         $haveData = false;
+        $out = '';
 
-        if ( isset( $this->_attributes[ 'host' ] ) )
-        {
-            $out = 'host="' . $this->_attributes[ 'host' ] . '"';
-            $haveData = true;
-        }
         if ( isset( $this->_attributes[ 'port' ] ) )
         {
             $out .= ( $haveData ? '; ' : '' ) . 'port=' . $this->_attributes[ 'port' ];
+            $haveData = true;
+        }
+        if ( isset( $this->_attributes[ 'host' ] ) )
+        {
+            $out = 'host="' . $this->_attributes[ 'host' ] . '"';
             $haveData = true;
         }
         if ( isset( $this->_attributes[ 'dbname' ] ) )
@@ -223,10 +223,11 @@ final class MySQL extends AbstractDriver
             $out .= ( $haveData ? '; ' : '' ) . 'charset="' . $this->_attributes[ 'charset' ] . '"';
             $haveData = true;
         }
-        $out .= ( $haveData ? '; ' : '' ) . 'user=[' .
-                ( empty( $this->_attributes[ 'user' ] ) ? 'un' : '' ) . 'defined]"';
+
         $out .= ( $haveData ? '; ' : '' ) . 'password=[' .
                 ( empty( $this->_attributes[ 'password' ] ) ? 'un' : '' ) . 'defined]"';
+        $out .= ( $haveData ? '; ' : '' ) . 'user=[' .
+                ( empty( $this->_attributes[ 'user' ] ) ? 'un' : '' ) . 'defined]"';
 
         return $out;
 
@@ -308,7 +309,7 @@ final class MySQL extends AbstractDriver
     public function setHost( ?string $host ): MySQL
     {
 
-        if ( !$this->_supportedAttributes->get( 'host' )->validateValue( $host ) )
+        if ( !$this->supportedAttributes->get( 'host' )->validateValue( $host ) )
         {
             throw new ArgumentException( 'host', $host, 'Invalid host!' );
         }
@@ -322,36 +323,35 @@ final class MySQL extends AbstractDriver
     /**
      * Sets the optional port number of the MySQL server.
      *
-     * @param $port
+     * @param mixed $port
      *
      * @return MySQL
      * @throws ArgumentException
      */
-    public function setPort( $port ): MySQL
+    public function setPort( mixed $port ): MySQL
     {
 
         if ( null === $port )
         {
             $this->_attributes[ 'port' ] = $port;
-
             return $this;
         }
 
-        $port = false;
+        $p = false;
         if ( \is_string( $port ) )
         {
-            $port = (int) $port;
+            $p = (int) $port;
         }
         else if ( TypeTool::IsInteger( $port ) )
         {
-            $port = (int) $port;
+            $p = (int) $port;
         }
         else if ( TypeTool::IsStringConvertible( $port, $portStr ) )
         {
-            $port = (int) $portStr;
+            $p = (int) $portStr;
         }
 
-        if ( !\is_int( $port ) || !$this->_supportedAttributes->get( 'port' )->validateValue( $port ) )
+        if ( ! \is_int( $p ) || ! $this->supportedAttributes->get( 'port' )->validateValue( $port ) )
         {
             throw new ArgumentException( 'port', $port, 'Invalid port!' );
         }
@@ -373,7 +373,7 @@ final class MySQL extends AbstractDriver
     public function setDbName( ?string $dbName ): MySQL
     {
 
-        if ( !$this->_supportedAttributes->get( 'dbname' )->validateValue( $dbName ) )
+        if ( !$this->supportedAttributes->get( 'dbname' )->validateValue( $dbName ) )
         {
             throw new ArgumentException( 'dbname', $dbName, 'Invalid database name!' );
         }
@@ -395,7 +395,7 @@ final class MySQL extends AbstractDriver
     public function setUnixSocket( ?string $socket ): MySQL
     {
 
-        if ( !$this->_supportedAttributes->get( 'unix_socket' )->validateValue( $socket ) )
+        if ( !$this->supportedAttributes->get( 'unix_socket' )->validateValue( $socket ) )
         {
             throw new ArgumentException( 'socket', $socket, 'Invalid unix socket!' );
         }
@@ -417,7 +417,7 @@ final class MySQL extends AbstractDriver
     public function setCharset( string $charset = 'UTF8' ): MySQL
     {
 
-        if ( !$this->_supportedAttributes->get( 'charset' )->validateValue( $charset ) )
+        if ( !$this->supportedAttributes->get( 'charset' )->validateValue( $charset ) )
         {
             throw new ArgumentException( 'charset', $charset, 'Invalid charset!' );
         }
@@ -439,7 +439,7 @@ final class MySQL extends AbstractDriver
     public function setAuthUserName( ?string $user ): MySQL
     {
 
-        if ( !$this->_supportedAttributes->get( 'user' )->validateValue( $user ) )
+        if ( !$this->supportedAttributes->get( 'user' )->validateValue( $user ) )
         {
             throw new ArgumentException(
                 'user', \str_repeat( '*', min( 64, \mb_strlen( $user, 'utf-8' ) ) ), 'Invalid auth user!' );
@@ -462,7 +462,7 @@ final class MySQL extends AbstractDriver
     public function setAuthPassword( ?string $password ): MySQL
     {
 
-        if ( !$this->_supportedAttributes->get( 'password' )->validateValue( $password ) )
+        if ( !$this->supportedAttributes->get( 'password' )->validateValue( $password ) )
         {
             throw new ArgumentException(
                 'password', \str_repeat( '*', min( 48, \mb_strlen( $password, 'utf-8' ) ) ), 'Invalid auth password!' );
@@ -520,7 +520,7 @@ final class MySQL extends AbstractDriver
             }
         }
 
-        $sql = 'SELECT count(*) FROM information_schema.TABLES WHERE (TABLE_SCHEMA = ?) AND (TABLE_NAME = ?)';
+        $sql = 'SELECT COUNT(*) FROM information_schema.TABLES WHERE (TABLE_SCHEMA = ?) AND (TABLE_NAME = ?)';
         $bindParams = [ $schema, $tableName ];
 
         try

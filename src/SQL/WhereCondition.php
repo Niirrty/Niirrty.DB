@@ -1,19 +1,28 @@
 <?php
+/**
+ * @author         Ni Irrty <niirrty+code@gmail.com>
+ * @copyright      © 2017-2021, Niirrty
+ * @package        Niirrty\DB\SQL
+ * @since          2017-11-01
+ * @version        0.4.0
+ */
+
+
+declare( strict_types=1 );
 
 
 namespace Niirrty\DB\SQL;
 
 
-use Niirrty\DB\DBException;
-use Niirrty\DB\DbType;
+use \Niirrty\DB\DBException;
+use \Niirrty\DB\DbType;
 
 
 class WhereCondition
 {
 
 
-    #region // PUBLIC CONSTANTS
-
+    #region // = = =   C O N S T A N T S   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
     /**
      * The column name value is a regular column name
@@ -35,11 +44,6 @@ class WhereCondition
      */
     public const VAL_TYPE_SQL = 'sql';
 
-    #endregion
-
-
-    #region // PRIVATE CONSTANTS
-
     private const OP_TYPE_EQ    = 'eq';
 
     private const OP_TYPE_NEQ   = 'neq';
@@ -58,67 +62,59 @@ class WhereCondition
 
     private const OP_TYPE_IN    = 'in';
 
+    private const OP_TYPE_NIN   = 'nin';
+
     #endregion
 
 
-    #region // PRIVATE FIELDS
+    #region // - - -   P R I V A T E   F I E L D S   - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /**
      * @internal The column name part of the condition
-     * @var string
+     * @var string|null
      */
-    private $_col = null;
+    private ?string $_col = null;
 
     /**
      * @internal The type of the column definition.
-     * @var string
+     * @var string|null
      */
-    private $_colType = null;
+    private ?string $_colType = null;
 
     /**
      * @internal The operator type, or '' if no Operator should be used
      * @var string
      */
-    private $_op = '';
+    private string $_op = '';
 
     /**
      * @internal The condition value part
-     * @var string
+     * @var string|null
      */
-    private $_val = null;
+    private ?string $_val = null;
 
     /**
      * @internal The condition value part type
-     * @var string
+     * @var string|null
      */
-    private $_valType = null;
-
-    /**
-     * @internal The parent WhereSQL instance
-     * @var WhereSQL
-     */
-    private $_parent;
+    private ?string $_valType = null;
 
     #endregion
 
 
-    #region // The constructor
+    #region // = = =   C O N S T R U C T O R   = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
     /**
      * WhereCondition constructor.
      *
      * @param WhereSQL $parent The parent WhereSQL instance
      */
-    public function __construct( WhereSQL $parent )
-    {
-
-        $this->_parent = $parent;
-    }
+    public function __construct( private WhereSQL $parent ) { }
 
     #endregion
 
 
-    #region // PUBLIC METHODS
+    #region // - - -   P U B L I C   M E T H O D S   - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /**
      * Sets the column condition part.
@@ -139,7 +135,7 @@ class WhereCondition
 
     }
 
-    #region // ALL OPERATORS
+    #region // - - - - ALL OPERATORS   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /**
      * Use the equal (=) operator.
@@ -267,6 +263,20 @@ class WhereCondition
 
     }
 
+    /**
+     * Use the NOT IN operator.
+     *
+     * @return WhereCondition
+     */
+    public function notInValue(): WhereCondition
+    {
+
+        $this->_op = self::OP_TYPE_NIN;
+
+        return $this;
+
+    }
+
     #endregion
 
     /**
@@ -309,18 +319,18 @@ class WhereCondition
     public function end(): WhereSQL
     {
 
-        if ( !$this->isValid() )
+        if ( ! $this->isValid() )
         {
             throw new DBException( 'Can not end this where condition because not all required parts are defined!' );
         }
 
-        return $this->_parent;
+        return $this->parent;
     }
 
     public function __toString()
     {
 
-        if ( !$this->isValid() )
+        if ( ! $this->isValid() )
         {
             return '';
         }
@@ -338,39 +348,20 @@ class WhereCondition
             $sql .= ' ' . $enc[ 0 ] . $this->_col . $enc[ 1 ];
         }
 
-        switch ( $this->_op )
+        $sql .= match ( $this->_op )
         {
-            case self::OP_TYPE_EQ:
-                $sql .= ' =';
-                break;
-            case self::OP_TYPE_NEQ:
-                $sql .= ' !=';
-                break;
-            case self::OP_TYPE_GT:
-                $sql .= ' >';
-                break;
-            case self::OP_TYPE_LT:
-                $sql .= ' <';
-                break;
-            case self::OP_TYPE_IS:
-                $sql .= ' IS';
-                break;
-            case self::OP_TYPE_ISN:
-                $sql .= ' IS NOT';
-                break;
-            case self::OP_TYPE_GL_EQ:
-                $sql .= ' <=';
-                break;
-            case self::OP_TYPE_GT_EQ:
-                $sql .= ' >=';
-                break;
-            case self::OP_TYPE_IN:
-                $sql .= ' IN';
-                break;
-            default:
-                $sql .= ' ';
-                break;
-        }
+            self::OP_TYPE_EQ    => ' =',
+            self::OP_TYPE_NEQ   => ' !=',
+            self::OP_TYPE_GT    => ' >',
+            self::OP_TYPE_LT    => ' <',
+            self::OP_TYPE_IS    => ' IS',
+            self::OP_TYPE_ISN   => ' IS NOT',
+            self::OP_TYPE_GL_EQ => ' <=',
+            self::OP_TYPE_GT_EQ => ' >=',
+            self::OP_TYPE_IN    => ' IN',
+            self::OP_TYPE_NIN   => ' NOT IN',
+            default             => ' ',
+        };
 
         $quote = $this->getStringEnclosures();
 
@@ -390,35 +381,29 @@ class WhereCondition
     #endregion
 
 
-    #region // PRIVATE METHODS
+    #region // - - -   P R I V A T E   M E T H O D S   - - - - - - - - - - - - - - - - - - - - - - - -
 
     private function getFieldNameEnclosures(): array
     {
 
-        switch ( $this->_parent->getDbType() )
+        return match ( $this->parent->getDbType() )
         {
-            case DbType::PGSQL:
-            case DbType::SQLITE:
-                return [ '"', '"' ];
-            default:
-                return [ '`', '`' ];
-        }
+            DbType::PGSQL, DbType::SQLITE => [ '"', '"' ],
+            default                       => [ '`', '`' ],
+        };
+
     }
 
     private function getStringEnclosures(): string
     {
 
-        switch ( $this->_parent->getDbType() )
+        return match ( $this->parent->getDbType() )
         {
-            case DbType::PGSQL:
-            case DbType::SQLITE:
-            case DbType::MYSQL:
-                return "'";
-            default:
-                return '"';
-        }
-    }
+            DbType::PGSQL, DbType::SQLITE, DbType::MYSQL => "'",
+            default                                      => '"',
+        };
 
+    }
 
     #endregion
 

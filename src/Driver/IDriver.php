@@ -1,10 +1,10 @@
 <?php
 /**
  * @author         Ni Irrty <niirrty+code@gmail.com>
- * @copyright      © 2017-2020, Niirrty
- * @package        Niirrty\DB\Driver\Attribute
+ * @copyright      © 2017-2021, Niirrty
+ * @package        Niirrty\DB\Driver
  * @since          2017-11-01
- * @version        0.3.0
+ * @version        0.4.0
  */
 
 
@@ -14,8 +14,8 @@ declare( strict_types=1 );
 namespace Niirrty\DB\Driver;
 
 
-use Niirrty\ArgumentException;
-use Niirrty\DB\Driver\Attribute\Support;
+use \Niirrty\ArgumentException;
+use \Niirrty\DB\Driver\Attribute\Support;
 
 
 /**
@@ -50,17 +50,17 @@ interface IDriver
      * @return IDriver
      * @throws ArgumentException If a unknown attribute should be defined
      */
-    public function setAttribute( string $name, $value );
+    public function setAttribute( string $name, mixed $value ): IDriver;
 
     /**
      * Gets the value of a driver specific Attribute.
      *
-     * @param string $name
-     * @param mixed  $defaultValue Is returned if the attribute is not defined
+     * @param string     $name
+     * @param mixed $defaultValue Is returned if the attribute is not defined
      *
      * @return mixed
      */
-    public function getAttribute( string $name, $defaultValue = false );
+    public function getAttribute( string $name, mixed $defaultValue = false ): mixed;
 
     /**
      * Gets if a attribute exists.
@@ -92,7 +92,7 @@ interface IDriver
      *
      * @return mixed
      */
-    public function __get( $name );
+    public function __get( string $name );
 
     /**
      * Sets the value of a driver specific Attribute.
@@ -100,7 +100,7 @@ interface IDriver
      * @param string $name
      * @param mixed  $value
      */
-    public function __set( $name, $value );
+    public function __set( string $name, mixed $value );
 
     /**
      * Checks if a value of the attribute with defined name is defined.
@@ -109,7 +109,7 @@ interface IDriver
      *
      * @return bool
      */
-    public function __isset( $name );
+    public function __isset( string $name );
 
     /**
      * Gets all connection info as string

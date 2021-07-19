@@ -1,10 +1,10 @@
 <?php
 /**
  * @author         Ni Irrty <niirrty+code@gmail.com>
- * @copyright      © 2017-2020, Niirrty
+ * @copyright      © 2017-2021, Niirrty
  * @package        Niirrty\DB\Driver\Attribute
  * @since          2017-11-01
- * @version        0.3.0
+ * @version        0.4.0
  */
 
 
@@ -21,41 +21,40 @@ class ValidationResult
 {
 
 
-    // <editor-fold desc="// – – –   P U B L I C   F I E L D S   – – – – – – – – – – – – – – – – – – – – – – – – –">
-
+    #region // – – –   P U B L I C   F I E L D S   – – – – – – – – – – – – – – – – – – – – – – – – –
 
     /**
      * Is the validated argument a known argument?
      *
      * @type bool
      */
-    public $isKnownArgument;
+    public bool $isKnownArgument;
 
     /**
      * Is the validated argument value a valid value?
      *
      * @type bool
      */
-    public $isValidValue;
+    public bool $isValidValue;
 
     /**
      * Error message, depending to $isKnownArgument and/or $isValidValue
      *
      * @type string|null
      */
-    public $errorMessage;
+    public ?string $errorMessage;
 
     /**
      * The final value if no error message is defined.
      *
      * @type string|null
      */
-    public $value;
+    public ?string $value;
 
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –
 
     /**
      * DSNArgValidationResult constructor.
@@ -70,10 +69,10 @@ class ValidationResult
 
     }
 
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –
 
     /**
      * Gets if an error message is defined. If it returns true, no usable argument value is defined.
@@ -151,8 +150,7 @@ class ValidationResult
 
     }
 
-
-    // </editor-fold>
+    #endregion
 
 
 }

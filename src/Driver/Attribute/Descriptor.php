@@ -1,10 +1,10 @@
 <?php
 /**
  * @author         Ni Irrty <niirrty+code@gmail.com>
- * @copyright      © 2017-2020, Niirrty
+ * @copyright      © 2017-2021, Niirrty
  * @package        Niirrty\DB\Driver\Attribute
  * @since          2017-11-01
- * @version        0.3.0
+ * @version        0.4.0
  */
 
 
@@ -21,58 +21,36 @@ class Descriptor
 {
 
 
-    // <editor-fold desc="// – – –   P R I V A T E   F I E L D S   – – – – – – – – – – – – – – – – – – – – – – – –">
-
-
-    /**
-     * The name of the described attribute.
-     *
-     * @type string
-     */
-    private $_name;
-
-    /**
-     * The described attribute is required or not?
-     *
-     * @type bool
-     */
-    private $_required;
+    #region // – – –   P R I V A T E   F I E L D S   – – – – – – – – – – – – – – – – – – – – – – – –
 
     /**
      * The default value of the described attribute.
      *
      * @type string|null
      */
-    private $_defaultValue;
+    private ?string $_defaultValue;
 
     /**
      * The argument value validator closure/callback or NULL if no validation should performed.
      *
      * @type \Closure|null
      */
-    private $_validator;
+    private ?\Closure $_validator;
 
     /**
      * Should the attribute use a name if its a part of the DSN?
      *
      * @type bool
      */
-    private $_useNameInDSN;
-
-    /**
-     * The attribute type. Use one of the `TYPE_*` constants defined by the `Type` class
-     *
-     * @type string
-     */
-    private $_type;
+    private bool $_useNameInDSN;
 
     /** @type ValueMissedLink|null */
-    private $_valueMissedLink;
+    private ?ValueMissedLink $_valueMissedLink;
 
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –
 
     /**
      * Descriptor constructor.
@@ -81,23 +59,20 @@ class Descriptor
      * @param string $type     The attribute type. Use one of the `TYPE_*` constants defined by the `Type` class
      * @param bool   $required Defines if the described attribute is required or not?
      */
-    public function __construct( string $name, string $type, bool $required = false )
+    public function __construct( private string $name, private string $type, private bool $required = false )
     {
 
-        $this->_name = $name;
-        $this->_required = $required;
-        $this->_defaultValue = null;
-        $this->_validator = null;
-        $this->_useNameInDSN = true;
-        $this->_type = $type;
+        $this->_defaultValue    = null;
+        $this->_validator       = null;
+        $this->_useNameInDSN    = true;
         $this->_valueMissedLink = null;
 
     }
 
-    // </editor-fold>
+    #endregion
 
 
-    // <editor-fold desc="// – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P U B L I C   M E T H O D S   – – – – – – – – – – – – – – – – – – – – – – – –
 
     /**
      * Gets the name of the described attribute.
@@ -107,7 +82,7 @@ class Descriptor
     public function getName(): string
     {
 
-        return $this->_name;
+        return $this->name;
 
     }
 
@@ -119,7 +94,7 @@ class Descriptor
     public function isRequired(): bool
     {
 
-        return $this->_required;
+        return $this->required;
 
     }
 
@@ -131,7 +106,7 @@ class Descriptor
     public function getType(): string
     {
 
-        return $this->_type;
+        return $this->type;
 
     }
 
@@ -143,7 +118,7 @@ class Descriptor
     public function isDSNPart(): bool
     {
 
-        return $this->_type === Type::DSN_PART;
+        return $this->type === Type::DSN_PART;
 
     }
 
@@ -155,7 +130,7 @@ class Descriptor
     public function isUserNameParam(): bool
     {
 
-        return $this->_type === Type::DSN_PART;
+        return $this->type === Type::DSN_PART;
 
     }
 
@@ -167,7 +142,7 @@ class Descriptor
     public function isPasswordParam(): bool
     {
 
-        return $this->_type === Type::DSN_PART;
+        return $this->type === Type::DSN_PART;
 
     }
 
@@ -245,7 +220,6 @@ class Descriptor
 
     }
 
-
     /**
      * Sets the alternative attribute if defined, that must exists if this attribute is not defined.
      *
@@ -272,7 +246,7 @@ class Descriptor
     public function setIsRequired( bool $required ): Descriptor
     {
 
-        $this->_required = $required;
+        $this->required = $required;
 
         return $this;
 
@@ -330,7 +304,6 @@ class Descriptor
 
     }
 
-
     /**
      * Checks if the value is a valid value of this DSN argument.
      *
@@ -350,8 +323,7 @@ class Descriptor
 
     }
 
-
-    // </editor-fold>
+    #endregion
 
 
 }

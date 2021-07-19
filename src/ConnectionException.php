@@ -1,10 +1,10 @@
 <?php
 /**
  * @author         Ni Irrty <niirrty+code@gmail.com>
- * @copyright      © 2016-2020, Niirrty
- * @package        Niirrty\DB\Driver\Attribute
+ * @copyright      © 2016-2021, Niirrty
+ * @package        Niirrty\DB
  * @since          2017-11-01
- * @version        0.3.0
+ * @version        0.4.0
  */
 
 
@@ -14,7 +14,7 @@ declare( strict_types=1 );
 namespace Niirrty\DB;
 
 
-use Niirrty\DB\Driver\IDriver;
+use \Niirrty\DB\Driver\IDriver;
 
 
 /**
@@ -26,10 +26,7 @@ class ConnectionException extends DBException
 {
 
 
-    private $_driver;
-
-
-    # <editor-fold desc="= = =   P U B L I C   C O N S T U C T O R   = = = = = = = = = = = = = = = = = = = = = =">
+    #region = = =   P U B L I C   C O N S T U C T O R   = = = = = = = = = = = = = = = = = = = = = =
 
     /**
      * ConnectionException constructor.
@@ -40,7 +37,7 @@ class ConnectionException extends DBException
      * @param \Throwable|null $previous
      */
     public function __construct(
-        IDriver $driver, ?string $message = null, $code = 256, \Throwable $previous = null )
+        private IDriver $driver, ?string $message = null, $code = 256, \Throwable $previous = null )
     {
 
         parent::__construct(
@@ -51,15 +48,16 @@ class ConnectionException extends DBException
             $code,
             $previous
         );
+
     }
 
-    # </editor-fold>
+    #endregion
 
 
     public final function getDriver(): IDriver
     {
 
-        return $this->_driver;
+        return $this->driver;
 
     }
 

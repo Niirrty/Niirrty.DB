@@ -1,10 +1,10 @@
 <?php
 /**
  * @author         Ni Irrty <niirrty+code@gmail.com>
- * @copyright      © 2017-2020, Niirrty
- * @package        Niirrty\DB\Driver\Attribute
+ * @copyright      © 2017-2021, Niirrty
+ * @package        Niirrty\DB\Driver
  * @since          2017-11-01
- * @version        0.3.0
+ * @version        0.4.0
  */
 
 
@@ -14,10 +14,10 @@ declare( strict_types=1 );
 namespace Niirrty\DB\Driver;
 
 
-use Niirrty\ArgumentException;
-use Niirrty\DB\{DbType, QueryException};
-use Niirrty\DB\Driver\Attribute\{Descriptor, Support, Type};
-use Niirrty\TypeTool;
+use \Niirrty\ArgumentException;
+use \Niirrty\DB\{DbType, QueryException};
+use \Niirrty\DB\Driver\Attribute\{Descriptor, Support, Type};
+use \Niirrty\TypeTool;
 
 
 /**
@@ -36,7 +36,7 @@ final class PgSQL extends AbstractDriver
 {
 
 
-    // <editor-fold desc="// – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –">
+    #region // – – –   P U B L I C   C O N S T R U C T O R   – – – – – – – – – – – – – – – – – – – –
 
 
     /**
@@ -157,7 +157,7 @@ final class PgSQL extends AbstractDriver
 
     }
 
-    // </editor-fold>
+    #endregion
 
     /**
      * Gets all connection info as string
@@ -263,7 +263,7 @@ final class PgSQL extends AbstractDriver
     public function setHost( ?string $host ): PgSQL
     {
 
-        if ( !$this->_supportedAttributes->get( 'host' )->validateValue( $host ) )
+        if ( !$this->supportedAttributes->get( 'host' )->validateValue( $host ) )
         {
             throw new ArgumentException( 'host', $host, 'Invalid host!' );
         }
@@ -306,7 +306,7 @@ final class PgSQL extends AbstractDriver
             $port = (int) $portStr;
         }
 
-        if ( !\is_int( $port ) || !$this->_supportedAttributes->get( 'port' )->validateValue( $port ) )
+        if ( !\is_int( $port ) || !$this->supportedAttributes->get( 'port' )->validateValue( $port ) )
         {
             throw new ArgumentException( 'port', $port, 'Invalid port!' );
         }
@@ -328,7 +328,7 @@ final class PgSQL extends AbstractDriver
     public function setDbName( ?string $dbName ): PgSQL
     {
 
-        if ( !$this->_supportedAttributes->get( 'dbname' )->validateValue( $dbName ) )
+        if ( !$this->supportedAttributes->get( 'dbname' )->validateValue( $dbName ) )
         {
             throw new ArgumentException( 'dbname', $dbName, 'Invalid database name!' );
         }
@@ -350,7 +350,7 @@ final class PgSQL extends AbstractDriver
     public function setCharset( string $charset = 'UTF8' ): PgSQL
     {
 
-        if ( !$this->_supportedAttributes->get( 'charset' )->validateValue( $charset ) )
+        if ( !$this->supportedAttributes->get( 'charset' )->validateValue( $charset ) )
         {
             throw new ArgumentException( 'charset', $charset, 'Invalid charset!' );
         }
@@ -372,7 +372,7 @@ final class PgSQL extends AbstractDriver
     public function setAuthUserName( ?string $user ): PgSQL
     {
 
-        if ( !$this->_supportedAttributes->get( 'user' )->validateValue( $user ) )
+        if ( !$this->supportedAttributes->get( 'user' )->validateValue( $user ) )
         {
             throw new ArgumentException(
                 'user', \str_repeat( '*', min( 64, \mb_strlen( $user, 'utf-8' ) ) ), 'Invalid auth user!' );
@@ -395,7 +395,7 @@ final class PgSQL extends AbstractDriver
     public function setAuthPassword( ?string $password ): PgSQL
     {
 
-        if ( !$this->_supportedAttributes->get( 'password' )->validateValue( $password ) )
+        if ( !$this->supportedAttributes->get( 'password' )->validateValue( $password ) )
         {
             throw new ArgumentException(
                 'password', \str_repeat( '*', min( 48, \mb_strlen( $password, 'utf-8' ) ) ), 'Invalid auth password!' );

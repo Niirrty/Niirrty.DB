@@ -1,11 +1,21 @@
 <?php
+/**
+ * @author         Ni Irrty <niirrty+code@gmail.com>
+ * @copyright      © 2017-2021, Niirrty
+ * @package        Niirrty\DB\SQL
+ * @since          2017-11-01
+ * @version        0.4.0
+ */
+
+
+declare( strict_types=1 );
 
 
 namespace Niirrty\DB\SQL;
 
 
-use Niirrty\DB\DBException;
-use Niirrty\DB\DbType;
+use \Niirrty\DB\DBException;
+use \Niirrty\DB\DbType;
 
 
 /**
@@ -41,44 +51,42 @@ class WhereSQL
 {
 
 
-    #region // PRIVATE FIELDS
-
+    #region // - - -   P R I V A T E   F I E L D S   - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /**
      * @internal All single parts of the WHERE Statement
      * @var array
      */
-    private $_parts;
-
-    /**
-     * @internal Optional Parent WhereSQL instance. If defined, it means this is a group.
-     * @var WhereSQL|null
-     */
-    private $_parent;
-
-    /**
-     * @internal The DB Driver Type. Known types are defined by DbType::... Constants
-     * @var string
-     */
-    private $_dbType;
+    private array $_parts;
 
     #endregion
 
 
-    #region // THE CONSTRUCTOR
+    #region // = = =   C O N S T R U C T O R   = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
-    public function __construct( ?WhereSQL $parent, string $dbType = null )
+    /**
+     * WhereSQL constructor.
+     *
+     * @param WhereSQL|null $parent Optional Parent WhereSQL instance. If defined, it means this is a group.
+     * @param string|null   $dbType The DB Driver Type. Known types are defined by DbType::... Constants
+     */
+    public function __construct( private ?WhereSQL $parent = null, private ?string $dbType = null )
     {
 
         $this->_parts = [];
-        $this->_parent = $parent;
-        $this->_dbType = null === $dbType ? ( null === $parent ? DbType::MYSQL : $parent->getDbType() ) : $dbType;
+        if ( null === $dbType )
+        {
+            $this->dbType = ( null === $parent )
+                          ? DbType::MYSQL
+                          : $parent->getDbType();
+        }
+
     }
 
     #endregion
 
 
-    #region // PUBLIC METHODS
+    #region // - - -   P U B L I C   M E T H O D S   - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /**
      * Returns how many parts are currently registered inside the instance
@@ -114,7 +122,7 @@ class WhereSQL
     public function group(): WhereSQL
     {
 
-        $this->_parts[] = new WhereSQL( $this, $this->_dbType );
+        $this->_parts[] = new WhereSQL( $this, $this->dbType );
 
         return $this->_parts[ \count( $this->_parts ) - 1 ];
 
@@ -164,7 +172,7 @@ class WhereSQL
     public function getDbType(): string
     {
 
-        return $this->_dbType;
+        return $this->dbType;
 
     }
 
@@ -177,7 +185,7 @@ class WhereSQL
     public function opAnd(): WhereSQL
     {
 
-        return $this->op( 'AND' );
+        return $this->op();
 
     }
 
@@ -202,7 +210,7 @@ class WhereSQL
     public function getParent(): ?WhereSQL
     {
 
-        return $this->_parent;
+        return $this->parent;
 
     }
 
@@ -214,7 +222,7 @@ class WhereSQL
     public function hasParent(): bool
     {
 
-        return null !== $this->_parent;
+        return null !== $this->parent;
 
     }
 
@@ -226,9 +234,9 @@ class WhereSQL
     public function end(): WhereSQL
     {
 
-        if ( null !== $this->_parent )
+        if ( null !== $this->parent )
         {
-            return $this->_parent;
+            return $this->parent;
         }
 
         return $this;
@@ -259,12 +267,21 @@ class WhereSQL
     #endregion
 
 
+    #region // - - -   P U B L I C   S T A T I C   M E T H O D S   - - - - - - - - - - - - - - - - - -
+
+    /**
+     * @param string $dbType
+     *
+     * @return WhereSQL
+     */
     public static function Create( string $dbType ): WhereSQL
     {
 
         return new WhereSQL( null, $dbType );
 
     }
+
+    #endregion
 
 
 }
