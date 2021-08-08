@@ -4,7 +4,7 @@
  * @copyright      © 2017-2021, Niirrty
  * @package        Niirrty\DB
  * @since          2017-11-01
- * @version        0.4.0
+ * @version        0.4.1
  */
 
 
@@ -46,7 +46,7 @@ class Connection
      *
      * @param IDriver $driver The DBMS depending driver implementation
      */
-    public function __construct( private IDriver $driver ) { }
+    public function __construct( private IDriver $driver ) { $this->_pdo = null; }
 
     #endregion
 
