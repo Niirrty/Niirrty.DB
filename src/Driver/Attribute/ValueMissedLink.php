@@ -42,7 +42,7 @@ class ValueMissedLink
      * @param string              $altName      The name of the other attribute that should be defined if the required not exists.
      */
     public function __construct(
-        private IValueMissedSupport $support, protected string $requiredName, protected string $altName ) { }
+        private readonly IValueMissedSupport $support, protected string $requiredName, protected string $altName ) { }
 
     #endregion
 

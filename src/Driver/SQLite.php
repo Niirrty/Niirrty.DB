@@ -48,23 +48,23 @@ final class SQLite extends AbstractDriver
                 ( new Descriptor( 'db', Type::DSN_PART, true ) )
                     ->setUseNameInDSN( false )
                     ->setValidator( function ( $value )
-                    {
+                        {
 
-                        if ( null === $value || !\is_string( $value ) || '' === \trim( $value ) )
-                        {
-                            return false;
-                        }
-                        if ( ':memory:' === $value )
-                        {
-                            return true;
-                        }
-                        if ( '\\' === \DIRECTORY_SEPARATOR )
-                        {
-                            return (bool) \preg_match( '~^[a-zA-Z0-9_.:\\\\!/$ -]+?$~', $value );
-                        }
+                            if ( ! \is_string( $value ) || '' === \trim( $value ) )
+                            {
+                                return false;
+                            }
+                            if ( ':memory:' === $value )
+                            {
+                                return true;
+                            }
+                            if ( '\\' === \DIRECTORY_SEPARATOR )
+                            {
+                                return (bool) \preg_match( '~^[a-zA-Z0-9_.:\\\\!/$ -]+?$~', $value );
+                            }
 
-                        return (bool) \preg_match( '~^[a-zA-Z0-9_./!$ -]+?$~', $value );
-                    }
+                            return (bool) \preg_match( '~^[a-zA-Z0-9_./!$ -]+?$~', $value );
+                        }
                     )
             );
 

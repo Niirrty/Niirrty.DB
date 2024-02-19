@@ -37,7 +37,7 @@ class ConnectionException extends DBException
      * @param \Throwable|null $previous
      */
     public function __construct(
-        private IDriver $driver, ?string $message = null, $code = 256, \Throwable $previous = null )
+        private readonly IDriver $driver, ?string $message = null, $code = 256, \Throwable $previous = null )
     {
 
         parent::__construct(

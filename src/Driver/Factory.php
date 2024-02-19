@@ -52,7 +52,6 @@ class Factory
             case 'php':
                 try
                 {
-                    /** @noinspection PhpIncludeInspection */
                     $data = include $configFile;
                 }
                 catch ( \Throwable $ex )
@@ -227,19 +226,19 @@ class Factory
                 }
                 if ( isset( $configData[ 'socket' ] ) )
                 {
-                    $drv->setUnixSocket( $configData[ 'socket' ] ?? null );
+                    $drv->setUnixSocket( $configData[ 'socket' ] );
                 }
                 else if ( isset( $configData[ 'unixsocket' ] ) )
                 {
-                    $drv->setUnixSocket( $configData[ 'unixsocket' ] ?? null );
+                    $drv->setUnixSocket( $configData[ 'unixsocket' ] );
                 }
                 else if ( isset( $configData[ 'unix_socket' ] ) )
                 {
-                    $drv->setUnixSocket( $configData[ 'unix_socket' ] ?? null );
+                    $drv->setUnixSocket( $configData[ 'unix_socket' ] );
                 }
                 else if ( isset( $configData[ 'unixSocket' ] ) )
                 {
-                    $drv->setUnixSocket( $configData[ 'unixSocket' ] ?? null );
+                    $drv->setUnixSocket( $configData[ 'unixSocket' ] );
                 }
                 break;
 

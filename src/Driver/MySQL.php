@@ -50,7 +50,7 @@ final class MySQL extends AbstractDriver
             // MySQL DSN attributes are separated by a semicolon
             ->setAttributeSeparator( ';' )
 
-            // MySQL DSN attribute names and values are separated by a equal sign
+            // MySQL DSN attribute names and values are separated by equal sign
             ->setDSNKeyValueSeparator( '=' );
 
 
@@ -62,14 +62,14 @@ final class MySQL extends AbstractDriver
                     ->setValidator( function ( $value )
                     {
 
-                        if ( null === $value || !\is_string( $value ) || '' === \trim( $value ) )
+                        if ( ! \is_string( $value ) || '' === \trim( $value ) )
                         {
                             return false;
                         }
 
                         return (bool) \preg_match( '~^[a-z]([a-z0-9_]+)?$~', $value );
                     }
-                    )
+                )
             )
 
             // host as DSN part, or if host is not defined unix_socket must be defined
@@ -77,19 +77,19 @@ final class MySQL extends AbstractDriver
                 ( new Descriptor( 'host', Type::DSN_PART, true ) )
                     ->setValueMissedLink( new ValueMissedLink( $support, 'host', 'unix_socket' ) )
                     ->setValidator( function ( $value )
-                    {
-
-                        if ( null === $value || !\is_string( $value ) || '' === \trim( $value ) )
                         {
-                            return false;
-                        }
 
-                        return (bool) \preg_match(
-                        // Host name                  | IP address
-                            '~^([a-zA-Z]([a-zA-Z0-9_.-]+)?|[12]\d{0,2}\.[012]\d{0,2}\.[012]\d{0,2}\.[012]\d{0,2})$~',
-                            $value
-                        );
-                    }
+                            if ( ! \is_string( $value ) || '' === \trim( $value ) )
+                            {
+                                return false;
+                            }
+
+                            return (bool) \preg_match(
+                            // Host name                  | IP address
+                                '~^([a-zA-Z]([a-zA-Z0-9_.-]+)?|[12]\d{0,2}\.[012]\d{0,2}\.[012]\d{0,2}\.[012]\d{0,2})$~',
+                                $value
+                            );
+                        }
                     )
             )
 
@@ -97,16 +97,16 @@ final class MySQL extends AbstractDriver
             ->add(
                 ( new Descriptor( 'port', Type::DSN_PART, false ) )
                     ->setValidator( function ( $value )
-                    {
-
-                        if ( null === $value || !\is_string( $value ) || !\is_int( $value ) )
                         {
-                            return false;
-                        }
-                        $port = (int) $value;
 
-                        return $port > 99 && $port < 65555;
-                    }
+                            if ( ! \is_string( $value ) && ! \is_int( $value ) )
+                            {
+                                return false;
+                            }
+                            $port = \intval( $value );
+
+                            return $port > 99 && $port < 65555;
+                        }
                     )
             )
 
@@ -115,16 +115,16 @@ final class MySQL extends AbstractDriver
                 ( new Descriptor( 'charset', Type::DSN_PART, false ) )
                     ->setDefaultValue( 'utf-8' )
                     ->setValidator( function ( $value )
-                    {
-
-                        if ( null === $value || !\is_string( $value ) || '' === \trim( $value ) )
                         {
-                            return false;
-                        }
-                        $len = \mb_strlen( $value );
 
-                        return $len > 0 && $len < 17;
-                    }
+                            if ( ! \is_string( $value ) || '' === \trim( $value ) )
+                            {
+                                return false;
+                            }
+                            $len = \mb_strlen( $value );
+
+                            return $len > 0 && $len < 17;
+                        }
                     )
             )
 
@@ -132,33 +132,33 @@ final class MySQL extends AbstractDriver
             ->add(
                 ( new Descriptor( 'unix_socket', Type::DSN_PART, false ) )
                     ->setValidator( function ( $value )
-                    {
-
-                        if ( null === $value || !\is_string( $value ) || '' === \trim( $value ) )
                         {
-                            return false;
-                        }
-                        $len = \mb_strlen( $value );
 
-                        return $len > 0 && $len < 256;
-                    }
+                            if ( ! \is_string( $value ) || '' === \trim( $value ) )
+                            {
+                                return false;
+                            }
+                            $len = \mb_strlen( $value );
+
+                            return $len > 0 && $len < 256;
+                        }
                     )
             )
 
-            // the user name parameter
+            // the username parameter
             ->add(
                 ( new Descriptor( 'user', Type::USERNAME_PARAM, true ) )
                     ->setValidator( function ( $value )
-                    {
-
-                        if ( null === $value || !\is_string( $value ) || '' === \trim( $value ) )
                         {
-                            return false;
-                        }
-                        $len = \mb_strlen( $value );
 
-                        return $len > 0 && $len < 51;
-                    }
+                            if ( ! \is_string( $value ) || '' === \trim( $value ) )
+                            {
+                                return false;
+                            }
+                            $len = \mb_strlen( $value );
+
+                            return $len > 0 && $len < 51;
+                        }
                     )
             )
 
@@ -167,16 +167,16 @@ final class MySQL extends AbstractDriver
                 ( new Descriptor( 'password', Type::PASSWORD_PARAM, false ) )
                     ->setDefaultValue( '' )
                     ->setValidator( function ( $value )
-                    {
-
-                        if ( null === $value || !\is_string( $value ) || '' === \trim( $value ) )
                         {
-                            return false;
-                        }
-                        $len = \mb_strlen( $value );
 
-                        return $len > 0 && $len < 129;
-                    }
+                            if ( ! \is_string( $value ) || '' === \trim( $value ) )
+                            {
+                                return false;
+                            }
+                            $len = \mb_strlen( $value );
+
+                            return $len > 0 && $len < 129;
+                        }
                     )
             );
 
@@ -200,12 +200,12 @@ final class MySQL extends AbstractDriver
 
         if ( isset( $this->_attributes[ 'port' ] ) )
         {
-            $out .= ( $haveData ? '; ' : '' ) . 'port=' . $this->_attributes[ 'port' ];
+            $out .= 'port=' . $this->_attributes[ 'port' ];
             $haveData = true;
         }
         if ( isset( $this->_attributes[ 'host' ] ) )
         {
-            $out = 'host="' . $this->_attributes[ 'host' ] . '"';
+            $out = ( $haveData ? '; ' : '' ) . 'host="' . $this->_attributes[ 'host' ] . '"';
             $haveData = true;
         }
         if ( isset( $this->_attributes[ 'dbname' ] ) )
@@ -299,7 +299,7 @@ final class MySQL extends AbstractDriver
     /**
      * Sets the host name or ip address of the MySQL server.
      *
-     * If you want to use a socket call {@see \Niirrty\DB\Driver\MySQL::setUnixSocket()} and not this method.
+     * If you want to use a socket call {@see MySQL::setUnixSocket} and not this method.
      *
      * @param null|string $host
      *
@@ -356,7 +356,7 @@ final class MySQL extends AbstractDriver
             throw new ArgumentException( 'port', $port, 'Invalid port!' );
         }
 
-        $this->_attributes[ 'port' ] = $port;
+        $this->_attributes[ 'port' ] = $p;
 
         return $this;
 

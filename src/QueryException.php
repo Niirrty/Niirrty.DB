@@ -39,8 +39,8 @@ class QueryException extends ConnectionException
      * @param \Throwable|null $previous
      */
     public function __construct(
-        IDriver $driver, private ?string $query, array $params = [], ?string $message = null,
-        int $code = 256, \Throwable $previous = null )
+        IDriver $driver, private readonly ?string $query, array $params = [], ?string $message = null,
+        int     $code = 256, \Throwable $previous = null )
     {
 
         $msg = "Bad query was:\n" . $query;

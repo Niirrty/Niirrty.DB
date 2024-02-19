@@ -109,7 +109,7 @@ class WhereCondition
      *
      * @param WhereSQL $parent The parent WhereSQL instance
      */
-    public function __construct( private WhereSQL $parent ) { }
+    public function __construct( private readonly WhereSQL $parent ) { }
 
     #endregion
 
@@ -305,7 +305,7 @@ class WhereCondition
     public function isValid(): bool
     {
 
-        return null !== $this->_col && null !== $this->_op && null !== $this->_val &&
+        return null !== $this->_col && null !== $this->_val &&
                null !== $this->_colType && null !== $this->_valType;
 
     }

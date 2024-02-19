@@ -53,15 +53,15 @@ final class PgSQL extends AbstractDriver
             ->add(
                 ( new Descriptor( 'dbname', Type::DSN_PART, false ) )
                     ->setValidator( function ( $value )
-                    {
-
-                        if ( null === $value || !\is_string( $value ) || '' === \trim( $value ) )
                         {
-                            return false;
-                        }
 
-                        return (bool) \preg_match( '~^[a-z]([a-z0-9_]+)?$~', $value );
-                    }
+                            if ( ! \is_string( $value ) || '' === \trim( $value ) )
+                            {
+                                return false;
+                            }
+
+                            return (bool) \preg_match( '~^[a-z]([a-z0-9_]+)?$~', $value );
+                        }
                     )
             )
 
@@ -69,19 +69,19 @@ final class PgSQL extends AbstractDriver
             ->add(
                 ( new Descriptor( 'host', Type::DSN_PART, false ) )
                     ->setValidator( function ( $value )
-                    {
-
-                        if ( null === $value || !\is_string( $value ) || '' === \trim( $value ) )
                         {
-                            return false;
-                        }
 
-                        return (bool) \preg_match(
-                        // Host name                  | IP address
-                            '~^([a-zA-Z]([a-zA-Z0-9_.-]+)?|[12]\d{0,2}\.[012]\d{0,2}\.[012]\d{0,2}\.[012]\d{0,2})$~',
-                            $value
-                        );
-                    }
+                            if ( ! \is_string( $value ) || '' === \trim( $value ) )
+                            {
+                                return false;
+                            }
+
+                            return (bool) \preg_match(
+                            // Host name                  | IP address
+                                '~^([a-zA-Z]([a-zA-Z0-9_.-]+)?|[12]\d{0,2}\.[012]\d{0,2}\.[012]\d{0,2}\.[012]\d{0,2})$~',
+                                $value
+                            );
+                        }
                     )
             )
 
@@ -89,16 +89,16 @@ final class PgSQL extends AbstractDriver
             ->add(
                 ( new Descriptor( 'user', Type::DSN_PART, false ) )
                     ->setValidator( function ( $value )
-                    {
-
-                        if ( null === $value || !\is_string( $value ) || '' === \trim( $value ) )
                         {
-                            return false;
-                        }
-                        $len = \mb_strlen( $value );
 
-                        return $len >= 1 && $len < 51;
-                    }
+                            if ( ! \is_string( $value ) || '' === \trim( $value ) )
+                            {
+                                return false;
+                            }
+                            $len = \mb_strlen( $value );
+
+                            return $len >= 1 && $len < 51;
+                        }
                     )
             )
 
@@ -106,16 +106,16 @@ final class PgSQL extends AbstractDriver
             ->add(
                 ( new Descriptor( 'password', Type::DSN_PART, false ) )
                     ->setValidator( function ( $value )
-                    {
-
-                        if ( null === $value || !\is_string( $value ) || '' === \trim( $value ) )
                         {
-                            return false;
-                        }
-                        $len = \mb_strlen( $value );
 
-                        return $len >= 1 && $len < 129;
-                    }
+                            if ( ! \is_string( $value ) || '' === \trim( $value ) )
+                            {
+                                return false;
+                            }
+                            $len = \mb_strlen( $value );
+
+                            return $len >= 1 && $len < 129;
+                        }
                     )
             )
 
@@ -123,16 +123,16 @@ final class PgSQL extends AbstractDriver
             ->add(
                 ( new Descriptor( 'port', Type::DSN_PART, false ) )
                     ->setValidator( function ( $value )
-                    {
-
-                        if ( null === $value || !\is_string( $value ) || !\is_int( $value ) )
                         {
-                            return false;
-                        }
-                        $port = (int) $value;
 
-                        return $port > 99 && $port < 65555;
-                    }
+                            if ( ! \is_string( $value ) && !\is_int( $value ) )
+                            {
+                                return false;
+                            }
+                            $port = \intval( $value );
+
+                            return $port > 99 && $port < 65555;
+                        }
                     )
             )
 
@@ -140,16 +140,16 @@ final class PgSQL extends AbstractDriver
             ->add(
                 ( new Descriptor( 'charset', Type::INIT_SQL, false ) )
                     ->setValidator( function ( $value )
-                    {
-
-                        if ( null === $value || !\is_string( $value ) || '' === \trim( $value ) )
                         {
-                            return false;
-                        }
-                        $len = \mb_strlen( $value );
 
-                        return $len > 0 && $len < 17;
-                    }
+                            if ( ! \is_string( $value ) || '' === \trim( $value ) )
+                            {
+                                return false;
+                            }
+                            $len = \mb_strlen( $value );
+
+                            return $len > 0 && $len < 17;
+                        }
                     )
             );
 
@@ -292,26 +292,26 @@ final class PgSQL extends AbstractDriver
             return $this;
         }
 
-        $port = false;
+        $p = false;
         if ( \is_string( $port ) )
         {
-            $port = (int) $port;
+            $p = (int) $port;
         }
         else if ( TypeTool::IsInteger( $port ) )
         {
-            $port = (int) $port;
+            $p = (int) $port;
         }
         else if ( TypeTool::IsStringConvertible( $port, $portStr ) )
         {
-            $port = (int) $portStr;
+            $p = (int) $portStr;
         }
 
-        if ( !\is_int( $port ) || !$this->supportedAttributes->get( 'port' )->validateValue( $port ) )
+        if ( ! \is_int( $p ) || !$this->supportedAttributes->get( 'port' )->validateValue( $port ) )
         {
             throw new ArgumentException( 'port', $port, 'Invalid port!' );
         }
 
-        $this->_attributes[ 'port' ] = $port;
+        $this->_attributes[ 'port' ] = $p;
 
         return $this;
 

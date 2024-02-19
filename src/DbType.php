@@ -23,13 +23,13 @@ interface DbType
 {
 
 
-    public const MYSQL       = 'mysql';
+    public final const MYSQL       = 'mysql';
 
-    public const PGSQL       = 'pgsql';
+    public final const PGSQL       = 'pgsql';
 
-    public const SQLITE      = 'sqlite';
+    public final const SQLITE      = 'sqlite';
 
-    public const KNOWN_TYPES = [ self::MYSQL, self::PGSQL, self::SQLITE ];
+    public final const KNOWN_TYPES = [ self::MYSQL, self::PGSQL, self::SQLITE ];
 
 
 }

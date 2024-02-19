@@ -40,7 +40,7 @@ return [
 * **port**:     The DB Port
 * **db**:       The name of the database that should be selected
 * **charset**:  The db connection charset
-* **user**:     The db login user name
+* **user**:     The db login username
 * **password**: The db login password
 
 #### 1.2. Usage

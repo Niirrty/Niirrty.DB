@@ -59,7 +59,7 @@ class Descriptor
      * @param string $type     The attribute type. Use one of the `TYPE_*` constants defined by the `Type` class
      * @param bool   $required Defines if the described attribute is required or not?
      */
-    public function __construct( private string $name, private string $type, private bool $required = false )
+    public function __construct( private readonly string $name, private readonly string $type, private bool $required = false )
     {
 
         $this->_defaultValue    = null;

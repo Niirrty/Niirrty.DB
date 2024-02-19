@@ -70,7 +70,7 @@ class WhereSQL
      * @param WhereSQL|null $parent Optional Parent WhereSQL instance. If defined, it means this is a group.
      * @param string|null   $dbType The DB Driver Type. Known types are defined by DbType::... Constants
      */
-    public function __construct( private ?WhereSQL $parent = null, private ?string $dbType = null )
+    public function __construct( private readonly ?WhereSQL $parent = null, private ?string $dbType = null )
     {
 
         $this->_parts = [];
